@@ -1,23 +1,23 @@
 ====================================================================
   AGENT IV — Analysis Report
   Material  : Data as is, Material is ZnO with Au contacts
-  Timestamp : 2026-05-08 21:06 UTC
+  Timestamp : 2026-05-08 21:15 UTC
   Iteration : 1
   T         : 300 K
 ====================================================================
 
-  [MARGINAL]  Schottky_series_resistance
-             R²=0.986388  R²_log=0.996057  χ²_r=13.0537
-  [REJECTED]  Schottky_emission
-             R²=-98.209961  R²_log=0.845266  χ²_r=4997.3537
-  [REJECTED]  Poole_Frenkel_emission
+  [REJECTED]  SCLC_with_Traps
+             R²=0.858861  R²_log=0.942369  χ²_r=561.1821
+  [REJECTED]  Trap_Assisted_Tunneling_TAT
+             R²=-3.942661  R²_log=0.887391  χ²_r=926.4985
+  [REJECTED]  Thermionic_Emission_Schottky
+             R²=-98.254849  R²_log=0.845246  χ²_r=4999.5694
+  [REJECTED]  Poole_Frenkel_Emission
              R²=-0.878959  R²_log=None  χ²_r=401.4762
-  [REJECTED]  Trap_SCLC_single_level
-             R²=-1041.520728  R²_log=-1.912288  χ²_r=365248178.7223
 
 
 ORCHESTRATOR FEEDBACK
 --------------------------------------------------
-The Schottky model with series resistance shows promise (R²=0.986, ideality n≈2.05) and should be refined by fixing Richardson constant A_star to the theoretical ZnO value (32 A/(cm²·K²)) while allowing barrier height and ideality to vary. The elevated ideality factor near 2.0 suggests interface recombination or tunneling contributions, so explore Schottky models with interface recombination states or thermionic field emission variants that account for both thermionic emission and tunneling through the barrier. The symmetric behavior (no rectification) with moderate current density at zero bias (1.14 µA/cm²) indicates back-to-back Schottky barriers or interface-dominated transport rather than bulk-limited mechanisms, ruling out simple SCLC. Consider equivalent circuits combining two opposing Schottky diodes in series to represent grain boundary barriers or dual-contact interfaces, which are common in ZnO polycrystalline films. The rejection of Poole-Frenkel and trap SCLC models confirms this is primarily an interface phenomenon rather than bulk trap-limited transport, so focus all future attempts on contact/interface mechanisms with ZnO-appropriate parameters (εr=8.5, electron affinity~4.3 eV).
+The ideality factor of 2.05 and symmetric-like behavior suggest that bulk-limited transport or interface recombination dominates over simple Schottky emission, so abandon pure thermionic models. The negative R² values for thermionic, TAT, and Poole-Frenkel indicate these barrier-dominated mechanisms are fundamentally mismatched to your data, while SCLC showed better log-scale fit (R²_log=0.94) but unrealistic ε_r, suggesting trap-mediated space-charge physics may be relevant if properly constrained. For ZnO with n≈2, try a two-diode model (one for interface recombination with n=2, one for bulk with n=1) or a single recombination-dominated diode with series resistance, as the near-2 ideality strongly indicates Shockley-Read-Hall recombination in the depletion region. The finite current at zero bias (J₀≈1.1 μA/cm²) requires either a shunt path or generation-recombination current component in any equivalent circuit. Consider that 200nm Au/ZnO likely has significant interface state density affecting both forward and reverse characteristics, so include interface trap states explicitly rather than trying bulk-only SCLC or barrier-only tunneling.
 
 ====================================================================
