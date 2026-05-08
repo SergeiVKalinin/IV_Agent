@@ -1,23 +1,23 @@
 ====================================================================
   AGENT IV — Analysis Report
   Material  : Data as is, Material is ZnO with Au contacts
-  Timestamp : 2026-05-08 19:34 UTC
-  Iteration : 2
+  Timestamp : 2026-05-08 19:37 UTC
+  Iteration : 3
   T         : 300 K
 ====================================================================
 
-  [REJECTED]  Two-Diode Model (Schottky + Interface Recombination)
-             R²=0.626392  R²_log=0.872053  χ²_r=74.7417
-  [REJECTED]  Three-Element Circuit: Schottky + Recombination + SCLC
-             R²=0.616359  R²_log=0.852683  χ²_r=238.5908
-  [REJECTED]  Voltage-Dependent Contact Resistance with Schottky
-             R²=0.427789  R²_log=-0.614882  χ²_r=343.743
-  [REJECTED]  Schottky + Trap-Assisted Tunneling Hybrid
-             R²=0.26908  R²_log=-3.410836  χ²_r=364.8331
+  [REJECTED]  Single_diode_recombination_with_parasitics
+             R²=-0.393712  R²_log=None  χ²_r=399.1095
+  [REJECTED]  Grain_boundary_limited_transport
+             R²=-0.393712  R²_log=None  χ²_r=399.1095
+  [REJECTED]  Interface_recombination_single_trap
+             R²=-0.393712  R²_log=None  χ²_r=399.1095
+  [REJECTED]  Ohmic_plus_exponential_leakage
+             R²=-0.393712  R²_log=None  χ²_r=399.1095
 
 
 ORCHESTRATOR FEEDBACK
 --------------------------------------------------
-The high ideality factor (n=3.23) and moderate rectification (rect=226) indicate that simple Schottky or two-diode models are insufficient, as evidenced by repeated n1≈2 terms being flagged as unreasonable when combined with high-n recombination channels. Avoid mechanisms that force n≈2 Schottky components, since the data clearly shows dominant transport beyond ideal thermionic emission; also abandon voltage-dependent contact resistance approaches given their poor log-scale fits (R²_log=-0.61). The consistently reasonable J02~10⁻⁶ to Jr~10⁻⁷ parameters with n2≈3.7-3.9 across multiple rejected models suggest a single dominant recombination mechanism rather than parallel pathways. Try a simplified single-diode model with n≈3.2 representing bulk or interface recombination as the primary mechanism, possibly adding only series resistance; alternatively, explore grain-boundary-limited transport or Poole-Frenkel emission models that naturally produce high ideality factors without requiring artificial multi-diode decomposition. The moderate Rsh (9897 Ω·cm²) and negative J(0) suggest significant shunt leakage or measurement artifacts at low voltages that should be explicitly modeled or filtered rather than forcing complex equivalent circuits to accommodate.
+The extremely high ideality factor (n=3.2) appearing consistently across all recombination-based models indicates these mechanisms are inappropriate for this ZnO/Au Schottky contact—such values exceed physical bounds for standard trap-assisted or interface recombination processes. The negative R² values across all fits suggest fundamental model inadequacy rather than parameter refinement issues. Given the high shunt resistance (9897 Ω·cm²) and the rectangular rectification ratio (225.6), the junction exhibits strong rectification but with transport that cannot be explained by conventional recombination pathways. For ZnO/Au contacts, you should pivot to pure thermionic emission models with barrier inhomogeneity (Gaussian or multi-patch barrier distributions) that naturally produce effective ideality factors above 2 without invoking unphysical recombination parameters. Additionally, consider models incorporating field-dependent barrier lowering (image-force or tunneling-enhanced thermionic emission) since the moderate series resistance (0.72 Ω·cm²) combined with poor recombination fits suggests barrier modulation rather than bulk/interface trap effects dominate the forward bias characteristics.
 
 ====================================================================
