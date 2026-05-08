@@ -6,47 +6,34 @@
     "thickness_nm": 200
   },
   "csv_path": "schottky_iv_dummy.csv",
-  "current_iteration": 3,
+  "current_iteration": 2,
   "max_iterations": 3,
   "status": "running",
   "tried_mechanisms": [
-    "Schottky_Plus_Series_Resistance",
-    "Schottky_Emission",
-    "Poole_Frenkel",
+    "Thermionic_Emission_Schottky",
+    "Trap_Assisted_Tunneling_TAT",
     "SCLC_Single_Trap_Level",
-    "Thermionic_Field_Emission_TFE",
-    "Schottky_Emission_With_Image_Force_And_Series_R",
-    "Space_Charge_Limited_Current_With_Exponential_Traps",
-    "Dual_Diode_TE_Plus_Interface_Recombination"
+    "Poole_Frenkel_Emission"
   ],
   "verdict_history": [
     {
       "iteration": 1,
-      "timestamp": "2026-05-08T20:22:32.614133+00:00",
+      "timestamp": "2026-05-08T20:33:17.583934+00:00",
       "models": [
         {
-          "name": "Schottky_Plus_Series_Resistance",
+          "name": "Thermionic_Emission_Schottky",
           "verdict": "rejected",
-          "R2": 0.986388,
-          "R2_log": 0.996057,
-          "numerical": "poor",
-          "physical": "borderline",
-          "residual_pat": "high-V systematic"
-        },
-        {
-          "name": "Schottky_Emission",
-          "verdict": "rejected",
-          "R2": -97.806996,
-          "R2_log": 0.845447,
+          "R2": -6.004877,
+          "R2_log": 0.89919,
           "numerical": "rejected",
           "physical": "unreasonable",
           "residual_pat": "high-V systematic"
         },
         {
-          "name": "Poole_Frenkel",
+          "name": "Trap_Assisted_Tunneling_TAT",
           "verdict": "rejected",
-          "R2": -0.878682,
-          "R2_log": -5.669454,
+          "R2": -7.981901,
+          "R2_log": 0.88962,
           "numerical": "rejected",
           "physical": "unreasonable",
           "residual_pat": "high-V systematic"
@@ -54,102 +41,54 @@
         {
           "name": "SCLC_Single_Trap_Level",
           "verdict": "rejected",
-          "R2": -429823.211325,
-          "R2_log": -6.209731,
+          "R2": -0.116551,
+          "R2_log": 0.637425,
+          "numerical": "rejected",
+          "physical": "unreasonable",
+          "residual_pat": "high-V systematic"
+        },
+        {
+          "name": "Poole_Frenkel_Emission",
+          "verdict": "rejected",
+          "R2": -0.865932,
+          "R2_log": -1.119213,
           "numerical": "rejected",
           "physical": "unreasonable",
           "residual_pat": "high-V systematic"
         }
       ],
-      "best_model": "Schottky_Plus_Series_Resistance",
+      "best_model": "Thermionic_Emission_Schottky",
       "best_verdict": "rejected",
-      "best_R2_log": 0.996057
-    },
-    {
-      "iteration": 2,
-      "timestamp": "2026-05-08T20:25:11.450334+00:00",
-      "models": [
-        {
-          "name": "Thermionic_Field_Emission_TFE",
-          "verdict": "rejected",
-          "R2": null,
-          "R2_log": null,
-          "numerical": "rejected",
-          "physical": "unknown",
-          "residual_pat": "N/A"
-        },
-        {
-          "name": "Schottky_Emission_With_Image_Force_And_Series_R",
-          "verdict": "rejected",
-          "R2": null,
-          "R2_log": null,
-          "numerical": "rejected",
-          "physical": "unknown",
-          "residual_pat": "N/A"
-        },
-        {
-          "name": "Space_Charge_Limited_Current_With_Exponential_Traps",
-          "verdict": "rejected",
-          "R2": null,
-          "R2_log": null,
-          "numerical": "rejected",
-          "physical": "unknown",
-          "residual_pat": "N/A"
-        },
-        {
-          "name": "Dual_Diode_TE_Plus_Interface_Recombination",
-          "verdict": "rejected",
-          "R2": -101373.194971,
-          "R2_log": -1.615074,
-          "numerical": "rejected",
-          "physical": "unreasonable",
-          "residual_pat": "systematic"
-        }
-      ],
-      "best_model": "Dual_Diode_TE_Plus_Interface_Recombination",
-      "best_verdict": "rejected",
-      "best_R2_log": -1.615074
+      "best_R2_log": 0.89919
     }
   ],
   "feedback_history": [
-    "Implement a dual-diode model combining thermionic emission (n=1) and interface recombination (n=2) in parallel with series resistance. The circuit topology should be: J_total = J_TE + J_rec where J_TE = A*T\u00b2*exp(-q*phi_B/kT)*[exp(q(V-J*Rs)/(kT)) - 1] with A*=32 A/(cm\u00b2\u00b7K\u00b2) fixed, and J_rec = J02*[exp(q(V-J*Rs)/(2kT)) - 1] representing trap-assisted recombination at interface states. Fit parameters: phi_B (barrier height, expect 0.7-0.9 eV), J02 (recombination saturation current, expect 10^-8 to 10^-6 A/cm\u00b2), and Rs (series resistance, initialize at 0.1 \u03a9\u00b7cm\u00b2). This model directly explains the measured n\u22482.05 as a weighted combination of the two parallel paths. Alternatively, try thermionic field emission which naturally produces intermediate ideality factors: use J = J_TFE*exp(qV/E0kT)*[exp(q(V-J*Rs)/kT) - 1] where E0=E00*coth(E00/kT) and E00=(qh/4\u03c0)*sqrt(Nd/(m*\u03b5_s*\u03b5_0)). For ZnO assume Nd\u224810^18 cm^-3, m*\u22480.24*m0, \u03b5_r\u22488.5, and fit phi_B, Nd (allow variation 10^17-10^19), and Rs. Both mechanisms should produce R\u00b2>0.99 if correct. Quantitative targets: phi_B between 0.75-0.85 eV based on prior fits, Rs near 0.1 \u03a9\u00b7cm\u00b2 from residual analysis, and for dual-diode model J02 should be comparable to or larger than J_TE at zero bias to explain the observed J(V=0)\u22481.1 \u03bcA/cm\u00b2.\n\nDO NOT propose any of these already-tried mechanisms: .\nCircuit guidance: Include series resistance Rs in the equivalent circuit (init guess \u22480.1 \u03a9\u00b7cm\u00b2). Add a parallel interface_recombination_current path.",
-    "The Au/ZnO data demands an equivalent circuit model with explicit parallel conduction paths. Implement Schottky_With_Interface_States_Plus_Shunt as the primary mechanism: combine standard thermionic emission (n=1) with an interface recombination current (n=2, representing recombination via midgap interface states) and parallel shunt resistance, all in series with contact resistance Rs. Initialize with phi_B=0.8-1.0 eV (typical Au/ZnO), Rs=2 \u03a9\u00b7cm\u00b2 (from previous attempts), Rsh=10 k\u03a9\u00b7cm\u00b2 (to yield ~1 \u00b5A/cm\u00b2 at low bias), and interface recombination prefactor J02~10^-7 A/cm\u00b2. The total current is J = J01*[exp(q(V-IRs)/(kT)) - 1] + J02*[exp(q(V-IRs)/(2kT)) - 1] + (V-IRs)/Rsh. As fallback, try Parallel_Schottky_And_Ohmic_Leakage (simpler n=1 TE with shunt only, no interface component). The systematic high-voltage residuals in all previous fits suggest voltage-dependent shunt conductance or series resistance; if both mechanisms fail, consider Rsh(V) or Rs(J) models. Quantitatively: expect fitted Rsh between 5-20 k\u03a9\u00b7cm\u00b2, Rs=1-5 \u03a9\u00b7cm\u00b2, phi_B=0.7-1.1 eV, and J02/J01 ratio around 10-100 to reproduce n_eff\u22482. Avoid all bulk transport models (SCLC, Poole-Frenkel) and pure single-diode approaches that cannot capture the parallel leakage evidenced by finite J(V=0).\n\nDO NOT propose any of these already-tried mechanisms: \"Schottky_Plus_Series_Resistance\", \"Schottky_Emission\", \"Poole_Frenkel\", \"SCLC_Single_Trap_Level\".\nCircuit guidance: Include series resistance Rs in the equivalent circuit (init guess \u22482.0 \u03a9\u00b7cm\u00b2). Include shunt resistance Rsh in parallel (init guess \u224810000.0 \u03a9\u00b7cm\u00b2). Add a parallel Interface_State_Recombination path."
+    "Implement Interface_State_Recombination_with_Rs as the primary model: use J=(J0_recomb/A)*exp(q*(V-J*Rs*A)/(n*k*T)) with n constrained between 1.8 and 2.3, Rs initialized at 5.1 \u03a9\u00b7cm\u00b2, and J0_recomb as a free parameter around 10\u207b\u00b9\u2070-10\u207b\u2078 A. This directly addresses the n=2.05 signature of interface recombination and the high-voltage series resistance evident in residual growth. If this single-mechanism fit yields R\u00b2>0.95 but shows systematic low-voltage deviations, proceed to Dual_Recombination_Tunneling_Parallel which adds a parallel tunneling branch: J_total=(J0_rec*exp(qV_eff/2kT) + J0_tun*exp(V_eff/V0_tun)) where V_eff accounts for shared series resistance. Initialize J0_tun\u224810\u207b\u2077 A and V0_tun\u22480.5 V based on the zero-bias current density. For grain boundary models (priority 3), use n_gb between 1.5-2.5 and incorporate polycrystalline resistivity effects. Avoid all previously tried mechanisms and any pure barrier-emission models; focus exclusively on recombination-based physics with explicit circuit elements. Constrain all barrier heights below 0.5 eV if any residual barrier terms appear. Report separate linear and log-scale R\u00b2 values, reduced chi-squared, and residual patterns at V<0.2V and V>0.8V regions.\n\nDO NOT propose any of these already-tried mechanisms: .\nCircuit guidance: Include series resistance Rs in the equivalent circuit (init guess \u22485.2 \u03a9\u00b7cm\u00b2). Add a parallel Interface_Recombination_plus_Tunneling path."
   ],
   "diagnosis_history": [
     {
       "needs_series_resistance": true,
-      "Rs_estimate_ohm_cm2": 0.0985786174380345,
+      "Rs_estimate_ohm_cm2": 5.147622701120841,
       "needs_shunt_resistance": false,
       "Rsh_estimate_ohm_cm2": null,
       "needs_parallel_mechanism": false,
       "evidence": [
-        "Residuals grow 34.9\u00d7 at high V \u2192 Rs\u22480.1 \u03a9\u00b7cm\u00b2."
-      ]
-    },
-    {
-      "needs_series_resistance": false,
-      "Rs_estimate_ohm_cm2": null,
-      "needs_shunt_resistance": false,
-      "Rsh_estimate_ohm_cm2": null,
-      "needs_parallel_mechanism": true,
-      "evidence": [
-        "Systematic residuals in 'Dual_Diode_TE_Plus_Interface_Recombination' \u2192 missing parallel path."
+        "Residuals grow 1019.2\u00d7 at high V \u2192 Rs\u22485.1 \u03a9\u00b7cm\u00b2."
       ]
     }
   ],
   "best_result": {
     "iteration": 1,
-    "model": "Schottky_Plus_Series_Resistance",
+    "model": "Thermionic_Emission_Schottky",
     "verdict": "rejected",
-    "R2": 0.986388,
-    "R2_log": 0.996057,
+    "R2": -6.004877,
+    "R2_log": 0.89919,
     "fit_params": {
-      "phi_B": 0.8014516076144818,
-      "A_star": 29.260313794380913,
-      "n": 1.9571336913588802,
-      "Rs": 40.52625887903389
+      "phi_B": 0.7255993331178721,
+      "A_star": 30.372503848912018,
+      "n": 3.794172477288259
     }
   },
-  "created_at": "2026-05-08T20:19:20.258373+00:00",
-  "updated_at": "2026-05-08T20:25:11.450383+00:00"
+  "created_at": "2026-05-08T20:30:08.602117+00:00",
+  "updated_at": "2026-05-08T20:33:17.583997+00:00"
 }
