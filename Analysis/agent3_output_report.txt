@@ -1,23 +1,23 @@
 ====================================================================
   AGENT IV — Analysis Report
   Material  : Data as is, Material is ZnO with Au contacts
-  Timestamp : 2026-05-08 19:25 UTC
-  Iteration : 1
+  Timestamp : 2026-05-08 19:34 UTC
+  Iteration : 2
   T         : 300 K
 ====================================================================
 
-  [REJECTED]  Trap_assisted_tunneling_with_Schottky
-             R²=0.810117  R²_log=0.938556  χ²_r=113.3613
-  [REJECTED]  Schottky_emission
-             R²=0.810124  R²_log=0.938553  χ²_r=113.3613
-  [REJECTED]  SCLC_single_trap_level
-             R²=-0.281588  R²_log=0.176869  χ²_r=214.5151
-  [REJECTED]  Poole_Frenkel_emission
-             R²=-0.393712  R²_log=-490.195812  χ²_r=399.1095
+  [REJECTED]  Two-Diode Model (Schottky + Interface Recombination)
+             R²=0.626392  R²_log=0.872053  χ²_r=74.7417
+  [REJECTED]  Three-Element Circuit: Schottky + Recombination + SCLC
+             R²=0.616359  R²_log=0.852683  χ²_r=238.5908
+  [REJECTED]  Voltage-Dependent Contact Resistance with Schottky
+             R²=0.427789  R²_log=-0.614882  χ²_r=343.743
+  [REJECTED]  Schottky + Trap-Assisted Tunneling Hybrid
+             R²=0.26908  R²_log=-3.410836  χ²_r=364.8331
 
 
 ORCHESTRATOR FEEDBACK
 --------------------------------------------------
-The ZnO/Au system shows severely elevated ideality factor (n=3.23 measured, 5.45 from fits) indicating strong recombination or interface states dominate transport, so avoid pure Schottky and Poole-Frenkel models which assume bulk-limited or simple barrier mechanisms. The SCLC model's poor fit (R²=-0.28) with unreasonable dielectric constant suggests space-charge effects are not the primary mechanism. The high sheet resistance (9.9 kΩ·cm²) combined with reasonable barrier height fits (~0.67-0.71 eV) but unreasonable Richardson constants point to interface-dominated transport where current spreading or contact inhomogeneity corrupts the effective emission area. Try equivalent circuits combining: (1) parallel Schottky diode with interface state recombination (Shockley-Read-Hall component), (2) distributed contact resistance models accounting for the high Rsh, or (3) multi-diode models with separate low-voltage (interface state) and high-voltage (barrier) pathways. The large n-factor specifically suggests midgap trap-assisted recombination at the ZnO/Au interface rather than tunneling, so explore recombination-generation current models or two-diode equivalent circuits before returning to TAT mechanisms.
+The high ideality factor (n=3.23) and moderate rectification (rect=226) indicate that simple Schottky or two-diode models are insufficient, as evidenced by repeated n1≈2 terms being flagged as unreasonable when combined with high-n recombination channels. Avoid mechanisms that force n≈2 Schottky components, since the data clearly shows dominant transport beyond ideal thermionic emission; also abandon voltage-dependent contact resistance approaches given their poor log-scale fits (R²_log=-0.61). The consistently reasonable J02~10⁻⁶ to Jr~10⁻⁷ parameters with n2≈3.7-3.9 across multiple rejected models suggest a single dominant recombination mechanism rather than parallel pathways. Try a simplified single-diode model with n≈3.2 representing bulk or interface recombination as the primary mechanism, possibly adding only series resistance; alternatively, explore grain-boundary-limited transport or Poole-Frenkel emission models that naturally produce high ideality factors without requiring artificial multi-diode decomposition. The moderate Rsh (9897 Ω·cm²) and negative J(0) suggest significant shunt leakage or measurement artifacts at low voltages that should be explicitly modeled or filtered rather than forcing complex equivalent circuits to accommodate.
 
 ====================================================================
