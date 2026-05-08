@@ -1,23 +1,23 @@
 ====================================================================
   AGENT IV — Analysis Report
   Material  : Data as is, Material is ZnO with Au contacts
-  Timestamp : 2026-05-08 21:15 UTC
-  Iteration : 1
+  Timestamp : 2026-05-08 21:19 UTC
+  Iteration : 2
   T         : 300 K
 ====================================================================
 
-  [REJECTED]  SCLC_with_Traps
-             R²=0.858861  R²_log=0.942369  χ²_r=561.1821
-  [REJECTED]  Trap_Assisted_Tunneling_TAT
-             R²=-3.942661  R²_log=0.887391  χ²_r=926.4985
-  [REJECTED]  Thermionic_Emission_Schottky
-             R²=-98.254849  R²_log=0.845246  χ²_r=4999.5694
-  [REJECTED]  Poole_Frenkel_Emission
-             R²=-0.878959  R²_log=None  χ²_r=401.4762
+  [REJECTED]  Interface_Recombination_Distributed_Traps_Series_R
+             R²=0.485517  R²_log=0.627643  χ²_r=227.3431
+  [REJECTED]  SRH_Recombination_Midgap_Series_R
+             R²=-335.014209  R²_log=0.626638  χ²_r=23422.1887
+  [REJECTED]  Recombination_Diode_n2_Series_R
+             R²=-10386.110995  R²_log=-0.451175  χ²_r=1064752.5411
+  [REJECTED]  Two_Diode_Model_Series_R
+             R²=-7360.853422  R²_log=-1.699791  χ²_r=8367874.6232
 
 
 ORCHESTRATOR FEEDBACK
 --------------------------------------------------
-The ideality factor of 2.05 and symmetric-like behavior suggest that bulk-limited transport or interface recombination dominates over simple Schottky emission, so abandon pure thermionic models. The negative R² values for thermionic, TAT, and Poole-Frenkel indicate these barrier-dominated mechanisms are fundamentally mismatched to your data, while SCLC showed better log-scale fit (R²_log=0.94) but unrealistic ε_r, suggesting trap-mediated space-charge physics may be relevant if properly constrained. For ZnO with n≈2, try a two-diode model (one for interface recombination with n=2, one for bulk with n=1) or a single recombination-dominated diode with series resistance, as the near-2 ideality strongly indicates Shockley-Read-Hall recombination in the depletion region. The finite current at zero bias (J₀≈1.1 μA/cm²) requires either a shunt path or generation-recombination current component in any equivalent circuit. Consider that 200nm Au/ZnO likely has significant interface state density affecting both forward and reverse characteristics, so include interface trap states explicitly rather than trying bulk-only SCLC or barrier-only tunneling.
+The ideality factor of 2.05 clearly indicates recombination-dominated transport, yet all recombination models failed catastrophically with negative R² values, suggesting the forward bias regime does not follow simple exponential diode behavior at all. The Two_Diode_Model with J02=1.1×10⁻⁶ A/cm² matching exactly the measured J(V=0) strongly suggests you're fitting a parasitic leakage path rather than true diode physics—avoid any diode-exponential mechanisms and instead try pure Ohmic or space-charge-limited current models. The Au/ZnO Schottky contact may be severely degraded or the junction completely shorted, so test a simple linear resistor model first to check if rectification truly exists in regions not shown in these statistics. If any rectification is present at higher voltages, consider trap-assisted tunneling or Poole-Frenkel emission mechanisms that dominate at interfaces with high defect densities rather than bulk recombination. The consistent Area fitting errors across models indicate either incorrect device geometry input or that current spreading/non-uniform injection is masking the true transport mechanism—verify the actual contact area is 0.01 cm² before proceeding.
 
 ====================================================================
