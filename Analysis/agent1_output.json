@@ -1,7 +1,7 @@
 {
   "meta": {
     "agent": "agent1_hypothesis",
-    "timestamp": "2026-05-08T18:12:53.078634Z",
+    "timestamp": "2026-05-08T18:20:05.408088Z",
     "iteration": 1,
     "material_prompt": "Data as is, Material is ZnO with Au contacts",
     "geometry": {
@@ -1311,7 +1311,7 @@
   "hypotheses": [
     {
       "mechanism_name": "Schottky emission",
-      "description": "Thermionic emission over the Au/ZnO Schottky barrier, dominant in forward bias. The high ideality factor (n=3.23) suggests significant interface states or inhomogeneities modifying the ideal barrier.",
+      "description": "Thermionic emission over the Au/ZnO Schottky barrier, enhanced by image-force lowering. The high ideality factor (n=3.23) suggests barrier inhomogeneity or series resistance effects.",
       "dominant_regime": "forward",
       "equation_latex": "J = A^* T^2 \\exp\\left(-\\frac{q\\phi_B}{kT}\\right) \\left[\\exp\\left(\\frac{qV}{nkT}\\right) - 1\\right]",
       "equation_python": "lambda V, E, T, p: p['A_star'] * T**2 * np.exp(-p['phi_B'] / (8.617e-5 * T)) * (np.exp(V / (p['n'] * 8.617e-5 * T)) - 1)",
@@ -1326,7 +1326,7 @@
         },
         {
           "name": "phi_B",
-          "symbol": "\\phi_B",
+          "symbol": "\u03c6_B",
           "units": "eV",
           "init_guess": 0.7,
           "bounds_low": 0.3,
@@ -1349,99 +1349,51 @@
       "priority": 1
     },
     {
-      "mechanism_name": "Trap-assisted tunneling (TAT)",
-      "description": "Electrons tunnel through the barrier via trap states at the Au/ZnO interface or in the depletion region. Common in ZnO due to high native defect density (oxygen vacancies, zinc interstitials), explaining non-ideal behavior and field-dependent conduction.",
-      "dominant_regime": "both",
-      "equation_latex": "J = J_{TAT} \\exp\\left(\\frac{qV}{E_{TAT} kT}\\right) \\exp\\left(\\frac{\\gamma \\sqrt{E}}{kT}\\right)",
-      "equation_python": "lambda V, E, T, p: p['J_TAT'] * np.exp(V / (p['E_TAT'] * 8.617e-5 * T)) * np.exp(p['gamma'] * np.sqrt(np.abs(E)) / (8.617e-5 * T))",
-      "free_params": [
-        {
-          "name": "J_TAT",
-          "symbol": "J_{TAT}",
-          "units": "A/cm\u00b2",
-          "init_guess": 1e-08,
-          "bounds_low": 1e-12,
-          "bounds_high": 0.0001
-        },
-        {
-          "name": "E_TAT",
-          "symbol": "E_{TAT}",
-          "units": "dimensionless",
-          "init_guess": 2.5,
-          "bounds_low": 1.0,
-          "bounds_high": 10.0
-        },
-        {
-          "name": "gamma",
-          "symbol": "\\gamma",
-          "units": "eV\u00b7cm^{0.5}/MV^{0.5}",
-          "init_guess": 0.05,
-          "bounds_low": 0.001,
-          "bounds_high": 0.5
-        }
-      ],
-      "normalization_needed": [
-        "V",
-        "E_MVcm",
-        "J"
-      ],
-      "literature_ref": "Lenzlinger & Snow, 1969, Journal of Applied Physics",
-      "priority": 2
-    },
-    {
       "mechanism_name": "Space-charge-limited current with traps",
-      "description": "At higher forward voltages, injected carriers exceed equilibrium concentration, leading to SCLC. Trap states in ZnO reduce mobility and create a trap-filled limit voltage (V_TFL), causing superlinear J-V behavior consistent with the observed high ideality.",
-      "dominant_regime": "high-field",
-      "equation_latex": "J = \\frac{9}{8} \\epsilon \\mu \\theta \\frac{V^2}{d^3}, \\quad \\theta = \\frac{N_c}{N_t} \\exp\\left(-\\frac{E_t}{kT}\\right)",
-      "equation_python": "lambda V, E, T, p: (9.0/8.0) * p['eps_r'] * 8.854e-14 * p['mu'] * p['N_c'] / p['N_t'] * np.exp(-p['E_t'] / (8.617e-5 * T)) * V**2 / (p['d']**3)",
+      "description": "SCLC dominated by exponential trap distribution in ZnO. Forward bias fills traps progressively, leading to trap-filled-limit transition at higher voltages. Explains superlinear J-V behavior.",
+      "dominant_regime": "forward",
+      "equation_latex": "J = \\frac{9}{8} \\epsilon_r \\epsilon_0 \\mu \\theta \\frac{V^2}{d^3}, \\quad \\theta = \\left(\\frac{V}{V_{TFL}}\\right)^{m-1}",
+      "equation_python": "lambda V, E, T, p: (9.0/8.0) * p['eps_r'] * 8.854e-14 * p['mu'] * np.where(V > 0, (V / p['V_TFL'])**(p['m']-1), 1e-20) * (V**2) / (p['d']**3)",
       "free_params": [
         {
           "name": "eps_r",
-          "symbol": "\\epsilon_r",
+          "symbol": "\u03b5_r",
           "units": "dimensionless",
           "init_guess": 8.5,
           "bounds_low": 5.0,
-          "bounds_high": 15.0
+          "bounds_high": 12.0
         },
         {
           "name": "mu",
-          "symbol": "\\mu",
+          "symbol": "\u03bc",
           "units": "cm\u00b2/(V\u00b7s)",
-          "init_guess": 10.0,
-          "bounds_low": 0.1,
-          "bounds_high": 200.0
+          "init_guess": 1.0,
+          "bounds_low": 0.01,
+          "bounds_high": 100.0
         },
         {
-          "name": "N_c",
-          "symbol": "N_c",
-          "units": "cm\u207b\u00b3",
-          "init_guess": 2.5e+18,
-          "bounds_low": 1e+17,
-          "bounds_high": 1e+20
-        },
-        {
-          "name": "N_t",
-          "symbol": "N_t",
-          "units": "cm\u207b\u00b3",
-          "init_guess": 1e+17,
-          "bounds_low": 1000000000000000.0,
-          "bounds_high": 1e+19
-        },
-        {
-          "name": "E_t",
-          "symbol": "E_t",
-          "units": "eV",
+          "name": "V_TFL",
+          "symbol": "V_TFL",
+          "units": "V",
           "init_guess": 0.5,
           "bounds_low": 0.1,
-          "bounds_high": 1.5
+          "bounds_high": 2.0
+        },
+        {
+          "name": "m",
+          "symbol": "m",
+          "units": "dimensionless",
+          "init_guess": 2.5,
+          "bounds_low": 1.5,
+          "bounds_high": 5.0
         },
         {
           "name": "d",
           "symbol": "d",
           "units": "cm",
           "init_guess": 2e-05,
-          "bounds_low": 1e-05,
-          "bounds_high": 5e-05
+          "bounds_low": 1.5e-05,
+          "bounds_high": 2.5e-05
         }
       ],
       "normalization_needed": [
@@ -1449,45 +1401,77 @@
         "J"
       ],
       "literature_ref": "Lampert & Mark, 1970, Current Injection in Solids",
-      "priority": 3
+      "priority": 2
     },
     {
       "mechanism_name": "Poole-Frenkel emission",
-      "description": "Field-assisted thermal emission from trap states in the ZnO bulk or at grain boundaries. The ln(J/E) vs sqrt(E) dependence arises from barrier lowering by the applied field, relevant for polycrystalline ZnO with high defect density.",
-      "dominant_regime": "high-field",
-      "equation_latex": "J = q \\mu N_c E \\exp\\left(-\\frac{q(\\phi_t - \\sqrt{qE/(\\pi\\epsilon)})}{kT}\\right)",
-      "equation_python": "lambda V, E, T, p: p['q_mu_Nc'] * np.abs(E) * 1e6 * np.exp(-(p['phi_t'] - p['beta_PF'] * np.sqrt(np.abs(E))) / (8.617e-5 * T))",
+      "description": "Field-assisted thermal emission from Coulombic traps in ZnO bulk. The ln(J/E) vs sqrt(E) relation characterizes this mechanism. Common in ZnO due to oxygen vacancies and grain boundaries.",
+      "dominant_regime": "both",
+      "equation_latex": "J = J_0 E \\exp\\left(-\\frac{q(\\phi_T - \\beta_{PF}\\sqrt{E})}{kT}\\right), \\quad \\beta_{PF} = \\sqrt{\\frac{q^3}{\\pi\\epsilon_r\\epsilon_0}}",
+      "equation_python": "lambda V, E, T, p: p['J0'] * E * np.exp(-(p['phi_T'] - p['beta_PF'] * np.sqrt(np.abs(E) + 1e-10)) / (8.617e-5 * T))",
       "free_params": [
         {
-          "name": "q_mu_Nc",
-          "symbol": "q\\mu N_c",
-          "units": "A\u00b7cm/V\u00b2",
+          "name": "J0",
+          "symbol": "J_0",
+          "units": "A/(cm\u00b2\u00b7MV/cm)",
           "init_guess": 1e-08,
           "bounds_low": 1e-12,
           "bounds_high": 0.0001
         },
         {
-          "name": "phi_t",
-          "symbol": "\\phi_t",
+          "name": "phi_T",
+          "symbol": "\u03c6_T",
           "units": "eV",
-          "init_guess": 0.6,
-          "bounds_low": 0.2,
+          "init_guess": 0.5,
+          "bounds_low": 0.1,
           "bounds_high": 1.5
         },
         {
           "name": "beta_PF",
-          "symbol": "\\beta_{PF}",
-          "units": "eV\u00b7cm^{0.5}/MV^{0.5}",
-          "init_guess": 0.02,
-          "bounds_low": 0.001,
-          "bounds_high": 0.1
+          "symbol": "\u03b2_PF",
+          "units": "eV\u00b7cm^0.5/V^0.5",
+          "init_guess": 3.5e-05,
+          "bounds_low": 1e-05,
+          "bounds_high": 0.0001
         }
       ],
       "normalization_needed": [
-        "E_MVcm",
+        "V",
+        "J",
+        "E_MVcm"
+      ],
+      "literature_ref": "Frenkel, 1938, Phys. Rev.; Hill, 1971, J. Appl. Phys.",
+      "priority": 3
+    },
+    {
+      "mechanism_name": "Trap-assisted tunneling",
+      "description": "Multi-step tunneling via trap states in ZnO bandgap, involving field-assisted tunneling followed by thermal emission. Dominant in thin films with high trap density, explaining both forward and reverse current.",
+      "dominant_regime": "both",
+      "equation_latex": "J = J_{TAT} \\exp\\left(\\frac{qV}{E_{TAT}}\\right) \\sinh\\left(\\frac{qV}{2kT}\\right)",
+      "equation_python": "lambda V, E, T, p: p['J_TAT'] * np.exp(np.abs(V) / p['E_TAT']) * np.sinh(V / (2.0 * 8.617e-5 * T))",
+      "free_params": [
+        {
+          "name": "J_TAT",
+          "symbol": "J_TAT",
+          "units": "A/cm\u00b2",
+          "init_guess": 1e-10,
+          "bounds_low": 1e-15,
+          "bounds_high": 1e-06
+        },
+        {
+          "name": "E_TAT",
+          "symbol": "E_TAT",
+          "units": "V",
+          "init_guess": 0.3,
+          "bounds_low": 0.05,
+          "bounds_high": 1.0
+        }
+      ],
+      "normalization_needed": [
+        "V",
         "J"
       ],
-      "literature_ref": "Frenkel, 1938, Physical Review",
+      "literature_ref": "Shockley & Read, 1952, Phys. Rev.; Simmons, 1967, J. Appl. Phys.",
       "priority": 4
     }
   ],
