@@ -1,7 +1,7 @@
 {
   "meta": {
     "agent": "agent2_fitter",
-    "timestamp": "2026-05-08T17:55:21.450468Z",
+    "timestamp": "2026-05-08T17:58:57.091193Z",
     "iteration": 1,
     "material_prompt": "Data as is, Material is ZnO with Au contacts",
     "geometry": {
@@ -3025,8 +3025,7 @@
   "agent3_instructions": {
     "check_each_fit": true,
     "physical_reasonableness": true,
-    "tabulated_material": "ZnO",
-    "contact_material": "Au",
+    "material_prompt": "Data as is, Material is ZnO with Au contacts",
     "temperature_K": 300,
     "verdict_options": [
       "accepted",
