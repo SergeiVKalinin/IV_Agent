@@ -1,23 +1,23 @@
 ====================================================================
   AGENT IV — Analysis Report
   Material  : Data as is, Material is ZnO with Au contacts
-  Timestamp : 2026-05-08 21:19 UTC
-  Iteration : 2
+  Timestamp : 2026-05-08 21:23 UTC
+  Iteration : 3
   T         : 300 K
 ====================================================================
 
-  [REJECTED]  Interface_Recombination_Distributed_Traps_Series_R
-             R²=0.485517  R²_log=0.627643  χ²_r=227.3431
-  [REJECTED]  SRH_Recombination_Midgap_Series_R
-             R²=-335.014209  R²_log=0.626638  χ²_r=23422.1887
-  [REJECTED]  Recombination_Diode_n2_Series_R
-             R²=-10386.110995  R²_log=-0.451175  χ²_r=1064752.5411
-  [REJECTED]  Two_Diode_Model_Series_R
-             R²=-7360.853422  R²_log=-1.699791  χ²_r=8367874.6232
+  [REJECTED]  Multistep_Tunneling_Through_Interface_States
+             R²=0.966002  R²_log=0.976355  χ²_r=100.7236
+  [REJECTED]  Ohmic_Leakage_Plus_Series_R
+             R²=-0.427572  R²_log=0.360272  χ²_r=278647.3777
+  [REJECTED]  Fowler_Nordheim_Tunneling_Series_Rsh
+             R²=-0.427578  R²_log=0.360272  χ²_r=278639.0078
+  [REJECTED]  Schottky_Emission_Barrier_Lowering_Series_R
+             R²=-0.613314  R²_log=0.005696  χ²_r=3196126.6976
 
 
 ORCHESTRATOR FEEDBACK
 --------------------------------------------------
-The ideality factor of 2.05 clearly indicates recombination-dominated transport, yet all recombination models failed catastrophically with negative R² values, suggesting the forward bias regime does not follow simple exponential diode behavior at all. The Two_Diode_Model with J02=1.1×10⁻⁶ A/cm² matching exactly the measured J(V=0) strongly suggests you're fitting a parasitic leakage path rather than true diode physics—avoid any diode-exponential mechanisms and instead try pure Ohmic or space-charge-limited current models. The Au/ZnO Schottky contact may be severely degraded or the junction completely shorted, so test a simple linear resistor model first to check if rectification truly exists in regions not shown in these statistics. If any rectification is present at higher voltages, consider trap-assisted tunneling or Poole-Frenkel emission mechanisms that dominate at interfaces with high defect densities rather than bulk recombination. The consistent Area fitting errors across models indicate either incorrect device geometry input or that current spreading/non-uniform injection is masking the true transport mechanism—verify the actual contact area is 0.01 cm² before proceeding.
+The ideality factor of 2.05 and symmetric current behavior suggest that interface recombination or generation-recombination mechanisms dominate over simple Schottky thermionic emission, which all attempted models have failed to capture. Avoid Fowler-Nordheim tunneling and simple ohmic models—these are physically inappropriate for a semiconductor with n≈2 and show poor log-domain fits (R²_log < 0.4). The Schottky barrier lowering model with beta=0.001 and Rs=100Ω is unphysical and should be abandoned. Instead, try a generation-recombination current model (J ∝ exp(qV/2kT)) with series resistance, or a dual-diode equivalent circuit combining diffusion (n=1) and recombination (n=2) components in parallel, which naturally explains ideality factors near 2. The near-zero current at V=0 (1.1 µA/cm²) indicates minimal shunt leakage, so focus on voltage-activated mechanisms rather than resistive paths. Consider also a trap-assisted tunneling model with physically constrained trap energy (0.3-0.5 eV) that produces the observed ideality factor through recombination statistics.
 
 ====================================================================
