@@ -1,0 +1,40 @@
+====================================================================
+  AGENT IV — Analysis Report
+  Material  : Data as is, Material is ZnO with Au contacts
+  Timestamp : 2026-05-08 18:04 UTC
+  Iteration : 1
+  T         : 300 K
+====================================================================
+
+VERDICT SUMMARY (4 models tested)
+--------------------------------------------------
+  [REJECTED]  Schottky emission
+             R²=0.8101  R²_log=0.938553  χ²_r=113.3613
+  [REJECTED]  Space-charge-limited current with traps (SCLC)
+             R²=0.9221  R²_log=0.489726  χ²_r=190.4296
+  [REJECTED]  Trap-assisted tunneling (TAT)
+             R²=0.2228  R²_log=-6.662897  χ²_r=369.5093
+  [REJECTED]  Poole-Frenkel emission
+             R²=-0.3937  R²_log=-412.388946  χ²_r=399.1095
+
+
+REJECTED MODELS — BRIEF NOTES
+--------------------------------------------------
+  Schottky emission
+    Numerical flags : R²=0.810 very low; R²_log=0.939 below threshold 0.98
+    Physical note   : While A* and φ_B fall within physically plausible ranges for Au/ZnO, the ideality factor of 5.45 is 
+  Space-charge-limited current with traps (SCLC)
+    Numerical flags : R²=0.922 below threshold 0.99; R²_log=0.490 very low (poor log-scale fit)
+    Physical note   : The SCLC model fails on multiple critical grounds: (1) fitted thickness contradicts specified geomet
+  Trap-assisted tunneling (TAT)
+    Numerical flags : R²=0.223 very low; R²_log=-6.663 very low (poor log-scale fit)
+    Physical note   : While individual parameter values are not physically impossible, the combination of extreme paramete
+  Poole-Frenkel emission
+    Numerical flags : R²=-0.394 very low; R²_log=-412.389 very low (poor log-scale fit)
+    Physical note   : The Poole-Frenkel model is physically inappropriate for this ZnO/Au system. The critical failure is 
+
+ORCHESTRATOR FEEDBACK FOR NEXT ITERATION
+--------------------------------------------------
+The Schottky emission model failed due to an unreasonably high ideality factor (n=5.45), indicating the forward current is not purely interface-limited thermionic emission over a single barrier. Avoid simple Schottky, Poole-Frenkel (which gave catastrophically poor fits with unphysical β_PF), and trap-assisted tunneling (which cannot capture the observed exponential forward behavior). The high ideality factor n≈3.2-5.4 combined with strong rectification (RR≈226) and moderate shunt resistance suggests multi-step transport involving both interface barriers and bulk traps. Try a composite model combining Schottky emission with a parallel shunt resistance and series resistance, or a two-diode model (one ideal Schottky at n≈1-2 plus a recombination/trap diode at higher n) to capture interface injection plus bulk recombination in the depletion region. The ZnO film likely has significant deep-level traps that dominate recombination at intermediate voltages, so consider Shockley-Read-Hall recombination current (J ∝ exp(qV/2kT) expected for n≈2) combined with diffusion current, or fit a generalized diode equation with voltage-dependent ideality factor to diagnose trap energy distributions.
+
+====================================================================
