@@ -1,8 +1,8 @@
 {
   "meta": {
     "agent": "agent3_judge",
-    "timestamp": "2026-05-08T20:24:35.984713+00:00",
-    "iteration": 2,
+    "timestamp": "2026-05-08T20:32:35.702100+00:00",
+    "iteration": 1,
     "material_prompt": "Data as is, Material is ZnO with Au contacts",
     "geometry": {
       "area_cm2": 0.01,
@@ -28,165 +28,397 @@
   },
   "judgements": [
     {
-      "mechanism_name": "Thermionic_Field_Emission_TFE",
+      "mechanism_name": "Thermionic_Emission_Schottky",
       "dominant_regime": "forward",
-      "equation_latex": "J = J_{TFE}\\exp\\left(\\frac{qV}{E_0 kT}\\right)\\left[\\exp\\left(\\frac{q(V-JR_s)}{kT}\\right)-1\\right], \\quad E_0 = E_{00}\\coth\\left(\\frac{E_{00}}{kT}\\right), \\quad E_{00} = \\frac{q\\hbar}{4\\pi}\\sqrt{\\frac{N_d}{m^*\\varepsilon_s\\varepsilon_0}}",
-      "literature_ref": "Crowell & Rideout, Solid-State Electronics 1969; Padovani & Stratton, Solid-State Electronics 1966",
-      "priority_agent1": 2,
-      "R2": null,
-      "R2_log": null,
-      "chi2_reduced": null,
-      "residuals_rms": null,
-      "fit_params": {},
-      "param_errors": {},
-      "numerical_quality_score": 0,
-      "numerical_verdict": "rejected",
-      "numerical_flags": [
-        "fit_did_not_converge"
-      ],
-      "residual_pattern": "N/A",
-      "physical_verdict": "unknown",
-      "physical_reasoning": "Fit did not converge.",
-      "parameter_checks": [],
-      "consistency_checks": [],
-      "suggested_next_if_bad": "",
-      "final_verdict": "rejected",
-      "verdict_rank": 1
-    },
-    {
-      "mechanism_name": "Schottky_Emission_With_Image_Force_And_Series_R",
-      "dominant_regime": "forward",
-      "equation_latex": "J = A^* T^2 \\exp\\left(-\\frac{q(\\phi_B - \\Delta\\phi)}{kT}\\right)\\left[\\exp\\left(\\frac{q(V-JR_s)}{kT}\\right)-1\\right], \\quad \\Delta\\phi = \\sqrt{\\frac{qE}{4\\pi\\varepsilon_s\\varepsilon_0}}",
-      "literature_ref": "Rhoderick & Williams, Metal-Semiconductor Contacts, 1988; Sze, Physics of Semiconductor Devices, 1981",
-      "priority_agent1": 3,
-      "R2": null,
-      "R2_log": null,
-      "chi2_reduced": null,
-      "residuals_rms": null,
-      "fit_params": {},
-      "param_errors": {},
-      "numerical_quality_score": 0,
-      "numerical_verdict": "rejected",
-      "numerical_flags": [
-        "fit_did_not_converge"
-      ],
-      "residual_pattern": "N/A",
-      "physical_verdict": "unknown",
-      "physical_reasoning": "Fit did not converge.",
-      "parameter_checks": [],
-      "consistency_checks": [],
-      "suggested_next_if_bad": "",
-      "final_verdict": "rejected",
-      "verdict_rank": 1
-    },
-    {
-      "mechanism_name": "Space_Charge_Limited_Current_With_Exponential_Traps",
-      "dominant_regime": "forward",
-      "equation_latex": "J = \\frac{9}{8}\\varepsilon_s\\varepsilon_0 \\mu \\theta \\frac{(V-JR_s)^{m+1}}{d^{2m+1}}, \\quad m = \\frac{T_t}{T}, \\quad \\theta = \\frac{N_c}{N_t}\\exp\\left(-\\frac{E_t}{kT_t}\\right)",
-      "literature_ref": "Mark & Helfrich, JAP 1962; Lampert & Mark, Current Injection in Solids, 1970",
-      "priority_agent1": 4,
-      "R2": null,
-      "R2_log": null,
-      "chi2_reduced": null,
-      "residuals_rms": null,
-      "fit_params": {},
-      "param_errors": {},
-      "numerical_quality_score": 0,
-      "numerical_verdict": "rejected",
-      "numerical_flags": [
-        "fit_did_not_converge"
-      ],
-      "residual_pattern": "N/A",
-      "physical_verdict": "unknown",
-      "physical_reasoning": "Fit did not converge.",
-      "parameter_checks": [],
-      "consistency_checks": [],
-      "suggested_next_if_bad": "",
-      "final_verdict": "rejected",
-      "verdict_rank": 1
-    },
-    {
-      "mechanism_name": "Dual_Diode_TE_Plus_Interface_Recombination",
-      "dominant_regime": "forward",
-      "equation_latex": "J = A^* T^2 \\exp\\left(-\\frac{q\\phi_B}{kT}\\right)\\left[\\exp\\left(\\frac{q(V-JR_s)}{kT}\\right)-1\\right] + J_{02}\\left[\\exp\\left(\\frac{q(V-JR_s)}{2kT}\\right)-1\\right]",
-      "literature_ref": "Sze & Ng, Physics of Semiconductor Devices, 3rd Ed., 2007; Werner & G\u00fcttler, JAP 1991",
+      "equation_latex": "J = A^{**} T^2 \\exp\\left(-\\frac{q\\phi_B}{kT}\\right) \\left[\\exp\\left(\\frac{qV}{nkT}\\right) - 1\\right]",
+      "literature_ref": "Sze & Ng, Physics of Semiconductor Devices, 3rd Ed., 2007",
       "priority_agent1": 1,
-      "R2": -101373.194971,
-      "R2_log": -1.615074,
-      "chi2_reduced": 96021964.9425,
-      "residuals_rms": 0.9539794863027822,
+      "R2": -6.004877,
+      "R2_log": 0.89919,
+      "chi2_reduced": 713.354,
+      "residuals_rms": 0.007930043937106617,
       "fit_params": {
-        "phi_B": 0.8999999999999999,
-        "J02": 7.544365328388195e-08,
-        "Rs": 0.002290333768080301
+        "phi_B": 0.7255993331178721,
+        "A_star": 30.372503848912018,
+        "n": 3.794172477288259
       },
       "param_errors": {
-        "phi_B": 0.0008269701961697121,
-        "J02": 1.0771532835120743e-06,
-        "Rs": 0.011678759810169201
+        "phi_B": 20613740.76982492,
+        "A_star": 24219268055.575253,
+        "n": 0.1148985319561333
       },
       "numerical_quality_score": 0,
       "numerical_verdict": "rejected",
       "numerical_flags": [
-        "R\u00b2=-101373.195 very low",
-        "R\u00b2_log=-1.615 very low",
-        "\u03c7\u00b2_r=96021964.9 >> 1",
+        "R\u00b2=-6.005 very low",
+        "R\u00b2_log=0.899 very low",
+        "\u03c7\u00b2_r=713.4 >> 1",
         "systematic residual structure",
-        "RMS residual = 6847.7% of J_max"
+        "residuals grow at high V \u2014 possible missing Rs",
+        "RMS residual = 56.9% of J_max"
       ],
-      "residual_pattern": "systematic",
+      "residual_pattern": "high-V systematic",
       "physical_verdict": "unreasonable",
-      "physical_reasoning": "While phi_B is individually plausible, the fit quality metrics reveal catastrophic model failure (R\u00b2=-101373, \u03c7\u00b2_r=96M). The enormous parameter uncertainties (J02 at 1400%, Rs at 510%) combined with negative R\u00b2 indicate the optimization failed to converge meaningfully. The fitted parameters are mathematical artifacts, not physical measurements. The model does not describe the data.",
+      "physical_reasoning": "The fit exhibits fatal pathologies: (1) ideality factor n=3.8 far exceeds acceptable range for thermionic emission, indicating model inadequacy; (2) parameter uncertainties exceeding values by 10\u2077-10\u00b9\u2070 demonstrate complete non-identifiability; (3) negative R\u00b2 in linear space despite good log-space fit reveals systematic model failure. The pure thermionic emission model is inappropriate for this data.",
       "parameter_checks": [
         {
           "param_name": "phi_B",
-          "fitted_value": 0.9,
-          "fitted_error": 0.000827,
+          "fitted_value": 0.7256,
+          "fitted_error": 20600000.0,
           "units": "eV",
-          "expected_range": "0.6 - 1.1 eV",
+          "expected_range": "0.6-0.9 eV for Au/ZnO",
           "value_assessment": "reasonable",
-          "reasoning": "Au/ZnO Schottky barrier heights typically range 0.6-1.1 eV depending on surface preparation and defect states. 0.9 eV is well within reported literature values for n-type ZnO.",
+          "reasoning": "Au/ZnO Schottky barrier heights typically range 0.6-0.9 eV depending on surface preparation and interface states. Value of 0.73 eV is well within literature range.",
           "severity": "ok"
         },
         {
-          "param_name": "J02",
-          "fitted_value": 7.5444e-08,
-          "fitted_error": 1.08e-06,
-          "units": "A/cm\u00b2",
-          "expected_range": "1e-12 to 1e-6 A/cm\u00b2",
-          "value_assessment": "reasonable",
-          "reasoning": "Interface recombination saturation current for ZnO devices typically spans several orders of magnitude depending on interface quality. Value is within expected range, though uncertainty is large (>1000%).",
+          "param_name": "A_star",
+          "fitted_value": 30.373,
+          "fitted_error": 24200000000.0,
+          "units": "A/(cm\u00b2\u00b7K\u00b2)",
+          "expected_range": "32-40 A/(cm\u00b2\u00b7K\u00b2) for ZnO",
+          "value_assessment": "borderline",
+          "reasoning": "Theoretical Richardson constant for ZnO is ~32-40 A/(cm\u00b2\u00b7K\u00b2) based on effective mass m*\u22480.27-0.33 m\u2080. Fitted value of 30.4 is slightly low but within experimental uncertainty, often reduced by interface inhomogeneities.",
           "severity": "minor"
         },
         {
-          "param_name": "Rs",
-          "fitted_value": 0.0022903,
-          "fitted_error": 0.0117,
-          "units": "\u03a9\u00b7cm\u00b2",
-          "expected_range": "0.001 - 10 \u03a9\u00b7cm\u00b2",
-          "value_assessment": "borderline",
-          "reasoning": "Series resistance appears unusually low for a 200 nm ZnO film with moderate conductivity. The enormous relative error (>500%) indicates this parameter is essentially unconstrained by the data.",
-          "severity": "moderate"
+          "param_name": "n",
+          "fitted_value": 3.7942,
+          "fitted_error": 0.115,
+          "units": "dimensionless",
+          "expected_range": "1.0-2.0 for ideal Schottky, up to 3.0 for non-ideal",
+          "value_assessment": "unreasonable",
+          "reasoning": "Ideality factor of 3.8 is excessively high, indicating severe non-idealities such as high series resistance, interface trap-assisted tunneling, or recombination current dominance. Values above 3 suggest model breakdown.",
+          "severity": "fatal"
         }
       ],
       "consistency_checks": [
         {
-          "check_name": "J02_vs_phi_B_consistency",
+          "check_name": "error_magnitude_vs_fit_quality",
           "passed": false,
-          "reasoning": "For thermionic emission with phi_B=0.9 eV, J01 would be ~1e-5 A/cm\u00b2 (using A*=32 A/cm\u00b2K\u00b2 for ZnO). J02=7.5e-8 is much smaller, suggesting minimal interface recombination, which is inconsistent with needing a dual-diode model."
+          "reasoning": "Parameter errors (phi_B: \u00b12\u00d710\u2077 eV, A_star: \u00b12\u00d710\u00b9\u2070) are astronomically large, indicating complete loss of parameter identifiability. Combined with R\u00b2=-6.0, the fit has catastrophically failed in linear space despite acceptable R\u00b2_log=0.90."
         },
         {
-          "check_name": "fit_quality_vs_parameter_errors",
+          "check_name": "ideality_factor_consistency",
           "passed": false,
-          "reasoning": "Catastrophically negative R\u00b2 (-101373) and enormous \u03c7\u00b2_r (96 million) indicate complete model failure. The tiny error on phi_B (0.09%) versus huge errors on J02 (1400%) and Rs (510%) suggests numerical instability and overfitting artifacts."
+          "reasoning": "n=3.8 violates basic Schottky theory. If thermionic emission were dominant, n should be 1-2. High n with acceptable log-space fit suggests series resistance or competing transport mechanisms not captured by pure thermionic emission model."
         },
         {
-          "check_name": "Rs_magnitude_check",
-          "passed": false,
-          "reasoning": "Rs=0.0023 \u03a9\u00b7cm\u00b2 for 200 nm ZnO implies resistivity ~1.1e-5 \u03a9\u00b7cm, which is 3-4 orders of magnitude lower than typical ZnO thin films (0.01-1 \u03a9\u00b7cm). This is unphysically low unless using degenerately doped material."
+          "check_name": "Richardson_vs_barrier_correlation",
+          "passed": true,
+          "reasoning": "While both parameters have issues, their central values maintain physically plausible relationship. Low A_star with moderate phi_B can occur with barrier inhomogeneities, showing internal mathematical consistency despite individual parameter problems."
         }
       ],
-      "suggested_next_if_bad": "1) Verify data quality and voltage range covers proper forward bias regime (0.2-0.8V). 2) Try simpler single-diode TE model first. 3) Check for experimental issues: wrong polarity, shorted contacts, or measurement artifacts. 4) Use better initial guesses: phi_B~0.7-0.8 eV, Rs from linear region slope. 5) If dual-diode still needed, constrain J02/J01 ratio based on physical expectations.",
+      "suggested_next_if_bad": "Include series resistance explicitly (thermionic emission + Rs model). Check for: (1) series resistance effects at high current; (2) tunneling contributions requiring field emission component; (3) interface layer requiring modified Richardson equation; (4) recombination current requiring additional exponential term with n=2. Verify ohmic contact quality and consider temperature-dependent measurements to decouple phi_B from n.",
+      "final_verdict": "rejected",
+      "verdict_rank": 1
+    },
+    {
+      "mechanism_name": "Trap_Assisted_Tunneling_TAT",
+      "dominant_regime": "forward",
+      "equation_latex": "J = J_0 \\exp\\left(\\frac{V}{V_0}\\right) \\exp\\left(-\\frac{\\phi_t}{E_0 + \\gamma E}\\right), \\quad E_0 = \\frac{kT}{q\\lambda}",
+      "literature_ref": "Simmons, J. Appl. Phys., 1963; Yeargan & Taylor, J. Appl. Phys., 1968",
+      "priority_agent1": 4,
+      "R2": -7.981901,
+      "R2_log": 0.88962,
+      "chi2_reduced": 860.2829,
+      "residuals_rms": 0.008979651106881478,
+      "fit_params": {
+        "J0_TAT": 9.999994248672282e-05,
+        "V0": 0.09499399440992584,
+        "phi_TAT": 0.17597192495081587,
+        "lambda_TAT": 0.6264064076344633,
+        "gamma": 1.0000000000000009e-07
+      },
+      "param_errors": {
+        "J0_TAT": NaN,
+        "V0": NaN,
+        "phi_TAT": NaN,
+        "lambda_TAT": NaN,
+        "gamma": NaN
+      },
+      "numerical_quality_score": 0,
+      "numerical_verdict": "rejected",
+      "numerical_flags": [
+        "R\u00b2=-7.982 very low",
+        "R\u00b2_log=0.890 very low",
+        "\u03c7\u00b2_r=860.3 >> 1",
+        "systematic residual structure",
+        "residuals grow at high V \u2014 possible missing Rs",
+        "RMS residual = 64.5% of J_max"
+      ],
+      "residual_pattern": "high-V systematic",
+      "physical_verdict": "unreasonable",
+      "physical_reasoning": "The fit has failed catastrophically as evidenced by NaN errors, negative R\u00b2, and \u03c7\u00b2_r=860. The trap depth of 0.176 eV is unphysically shallow for ZnO, being only 7\u00d7 thermal energy at 300K and inconsistent with known ZnO defect states. Multiple parameters appear at boundary values suggesting optimization failure rather than physical solution.",
+      "parameter_checks": [
+        {
+          "param_name": "J0_TAT",
+          "fitted_value": 0.0001,
+          "fitted_error": "nan",
+          "units": "A/cm\u00b2",
+          "expected_range": "1e-12 to 1e-6 A/cm\u00b2",
+          "value_assessment": "borderline",
+          "reasoning": "Pre-exponential current density of 0.1 mA/cm\u00b2 is high for trap-assisted tunneling in ZnO/Au, typically expecting 1-3 orders of magnitude lower for tunneling processes.",
+          "severity": "moderate"
+        },
+        {
+          "param_name": "V0",
+          "fitted_value": 0.094994,
+          "fitted_error": "nan",
+          "units": "V",
+          "expected_range": "0.03 to 0.3 V",
+          "value_assessment": "reasonable",
+          "reasoning": "Voltage scaling parameter of ~95 mV is physically plausible for field-assisted tunneling at room temperature, close to thermal voltage (26 mV) multiplied by trap distribution factors.",
+          "severity": "ok"
+        },
+        {
+          "param_name": "phi_TAT",
+          "fitted_value": 0.17597,
+          "fitted_error": "nan",
+          "units": "eV",
+          "expected_range": "0.3 to 1.2 eV",
+          "value_assessment": "unreasonable",
+          "reasoning": "Trap depth of 0.176 eV is far too shallow for ZnO which typically has deep traps at 0.5-1.0 eV below conduction band; this is barely above thermal energy at 300K (0.026 eV).",
+          "severity": "fatal"
+        },
+        {
+          "param_name": "lambda_TAT",
+          "fitted_value": 0.62641,
+          "fitted_error": "nan",
+          "units": "nm",
+          "expected_range": "0.5 to 3.0 nm",
+          "value_assessment": "reasonable",
+          "reasoning": "Tunneling attenuation length of 0.63 nm is physically reasonable for electron tunneling through oxide barriers, consistent with typical decay lengths in metal-oxide systems.",
+          "severity": "ok"
+        },
+        {
+          "param_name": "gamma",
+          "fitted_value": 1e-07,
+          "fitted_error": "nan",
+          "units": "cm/V",
+          "expected_range": "1e-8 to 1e-6 cm/V",
+          "value_assessment": "reasonable",
+          "reasoning": "Field-lowering coefficient of 1e-7 cm/V is within expected range for barrier modification in oxide semiconductors under applied field.",
+          "severity": "ok"
+        }
+      ],
+      "consistency_checks": [
+        {
+          "check_name": "E0_thermal_consistency",
+          "passed": false,
+          "reasoning": "E0 = kT/(q*lambda) = 0.026 eV / 0.63 nm \u2248 0.041 eV/nm is reasonable, but combined with phi_TAT=0.176 eV gives unphysically shallow trap activation that contradicts known ZnO defect physics."
+        },
+        {
+          "check_name": "barrier_to_trap_depth_ratio",
+          "passed": false,
+          "reasoning": "For Au/ZnO Schottky barriers (~0.6-0.8 eV), trap level at 0.176 eV is too close to conduction band to explain significant trap-assisted tunneling contribution."
+        },
+        {
+          "check_name": "fit_convergence",
+          "passed": false,
+          "reasoning": "All parameter errors are NaN indicating fit did not converge properly; negative R\u00b2=-7.98 confirms catastrophic fit failure while \u03c7\u00b2_r=860 shows extremely poor data matching."
+        },
+        {
+          "check_name": "parameter_boundary_collision",
+          "passed": false,
+          "reasoning": "J0_TAT and gamma both at round values (1e-4, 1e-7) suggest optimizer hit parameter bounds rather than finding true minimum."
+        }
+      ],
+      "suggested_next_if_bad": "Reject this fit. Try simpler mechanisms first (thermionic emission, Schottky emission) to establish baseline barrier height. If TAT is needed, constrain phi_TAT to physical range (0.4-1.0 eV) based on ZnO defect literature, check data quality in low-voltage regime, and verify voltage range is appropriate for TAT mechanism (typically <0.5V).",
+      "final_verdict": "rejected",
+      "verdict_rank": 1
+    },
+    {
+      "mechanism_name": "SCLC_Single_Trap_Level",
+      "dominant_regime": "forward",
+      "equation_latex": "J = \\frac{9}{8} \\epsilon_r \\epsilon_0 \\mu \\theta \\frac{V^2}{d^3}, \\quad \\theta = \\frac{n_{free}}{n_{trap}} \\propto \\exp\\left(-\\frac{E_t}{kT}\\right)",
+      "literature_ref": "Lampert & Mark, Current Injection in Solids, 1970",
+      "priority_agent1": 2,
+      "R2": -0.116551,
+      "R2_log": 0.637425,
+      "chi2_reduced": 29845.0204,
+      "residuals_rms": 0.0031660265841885293,
+      "fit_params": {
+        "mu": 1.892029848933175,
+        "eps_r": 8.603214496394306,
+        "E_t": 0.2978369623086969,
+        "d": 1.991343222430616e-05
+      },
+      "param_errors": {
+        "mu": 44005238064.293144,
+        "eps_r": 8611010224.965767,
+        "E_t": 663169417.1344175,
+        "d": 30396.186379244406
+      },
+      "numerical_quality_score": 0,
+      "numerical_verdict": "rejected",
+      "numerical_flags": [
+        "R\u00b2=-0.117 very low",
+        "R\u00b2_log=0.637 very low",
+        "\u03c7\u00b2_r=29845.0 >> 1",
+        "systematic residual structure",
+        "residuals grow at high V \u2014 possible missing Rs",
+        "RMS residual = 22.7% of J_max"
+      ],
+      "residual_pattern": "high-V systematic",
+      "physical_verdict": "unreasonable",
+      "physical_reasoning": "While individual parameter values happen to fall within physically plausible ranges for ZnO, the fit is completely invalid. Parameter errors exceed fitted values by 9-10 orders of magnitude indicating total non-identifiability. The negative R\u00b2 and enormous reduced chi-square demonstrate the SCLC single-trap model fundamentally does not describe the data. This is a failed fit masquerading as reasonable due to accidental parameter values.",
+      "parameter_checks": [
+        {
+          "param_name": "mu",
+          "fitted_value": 1.892,
+          "fitted_error": 44000000000.0,
+          "units": "cm\u00b2/(V\u00b7s)",
+          "expected_range": "0.1-200 cm\u00b2/(V\u00b7s) for ZnO thin films",
+          "value_assessment": "reasonable",
+          "reasoning": "ZnO electron mobility in thin films typically ranges 0.1-200 cm\u00b2/(V\u00b7s) depending on quality. Fitted value of ~1.9 is in lower range consistent with polycrystalline or defective material, but error is catastrophically large indicating complete parameter uncertainty.",
+          "severity": "fatal"
+        },
+        {
+          "param_name": "eps_r",
+          "fitted_value": 8.6032,
+          "fitted_error": 8610000000.0,
+          "units": "dimensionless",
+          "expected_range": "8.0-10.0 for ZnO",
+          "value_assessment": "reasonable",
+          "reasoning": "ZnO relative permittivity is well-established at 8-10, so fitted value of 8.6 is excellent. However, the enormous error (10^9) indicates this parameter is completely unconstrained by the data.",
+          "severity": "fatal"
+        },
+        {
+          "param_name": "E_t",
+          "fitted_value": 0.29784,
+          "fitted_error": 663000000.0,
+          "units": "eV",
+          "expected_range": "0.05-0.5 eV for shallow-to-mid-gap traps in ZnO",
+          "value_assessment": "reasonable",
+          "reasoning": "ZnO commonly exhibits trap levels from oxygen vacancies (0.05-0.3 eV) and zinc interstitials (0.2-0.5 eV). Value of 0.30 eV is physically plausible for such defects, but error magnitude renders it meaningless.",
+          "severity": "fatal"
+        },
+        {
+          "param_name": "d",
+          "fitted_value": 1.9913e-05,
+          "fitted_error": 30400.0,
+          "units": "cm",
+          "expected_range": "2.0e-05 cm (200 nm, fixed by experiment)",
+          "value_assessment": "reasonable",
+          "reasoning": "Fitted thickness of 199.13 nm matches stated 200 nm within 0.4%, which is excellent agreement. However, allowing thickness to float with huge error (\u00b1304 \u03bcm) when it should be fixed indicates severe model overfitting and parameter correlations.",
+          "severity": "fatal"
+        }
+      ],
+      "consistency_checks": [
+        {
+          "check_name": "Error magnitudes vs fitted values",
+          "passed": false,
+          "reasoning": "All parameters have errors 10^9 to 10^10 times larger than fitted values. This indicates complete parameter non-identifiability and numerical instability in the fitting algorithm. The fit has essentially failed."
+        },
+        {
+          "check_name": "R\u00b2 values consistency",
+          "passed": false,
+          "reasoning": "R\u00b2=-0.116 (negative!) means model performs worse than horizontal line, while R\u00b2_log=0.637 suggests moderate fit on log scale. This contradiction plus \u03c7\u00b2_r=29845 indicates severe systematic model-data mismatch in linear space."
+        },
+        {
+          "check_name": "SCLC voltage scaling",
+          "passed": false,
+          "reasoning": "SCLC requires J\u221dV\u00b2 in trap-filled regime. The catastrophic fit quality (negative R\u00b2, enormous \u03c7\u00b2_r) strongly suggests data does not follow quadratic voltage dependence, invalidating the SCLC mechanism assumption."
+        },
+        {
+          "check_name": "Theta parameter physically reasonable",
+          "passed": true,
+          "reasoning": "With E_t=0.30 eV at 300 K, \u03b8=exp(-0.30/0.0259)\u22486\u00d710^-6, giving strong trap filling which is consistent with SCLC theory. However, this is meaningless given parameter uncertainties."
+        }
+      ],
+      "suggested_next_if_bad": "Reject SCLC mechanism. Examine raw I-V data: check for ohmic regime (J\u221dV) at low bias, look for exponential Schottky emission or thermionic emission at moderate bias. Try Schottky diode model (thermionic emission) or Poole-Frenkel emission first. Verify contact quality\u2014Au/ZnO may form rectifying Schottky barrier rather than ohmic injection needed for SCLC. Consider series resistance effects.",
+      "final_verdict": "rejected",
+      "verdict_rank": 1
+    },
+    {
+      "mechanism_name": "Poole_Frenkel_Emission",
+      "dominant_regime": "both",
+      "equation_latex": "J = J_0 \\exp\\left(\\frac{q}{kT}\\left[\\beta_{PF}\\sqrt{E} - \\phi_t\\right]\\right), \\quad \\beta_{PF} = \\sqrt{\\frac{q}{\\pi\\epsilon_r\\epsilon_0}}",
+      "literature_ref": "Frenkel, Phys. Rev., 1938; Sze & Ng, 2007",
+      "priority_agent1": 3,
+      "R2": -0.865932,
+      "R2_log": -1.119213,
+      "chi2_reduced": 6041.5662,
+      "residuals_rms": 0.004092825780042719,
+      "fit_params": {
+        "J0": 0.0009999999999833423,
+        "phi_t": 0.1000000197868085,
+        "eps_r": 8.5
+      },
+      "param_errors": {
+        "J0": NaN,
+        "phi_t": NaN,
+        "eps_r": NaN
+      },
+      "numerical_quality_score": 0,
+      "numerical_verdict": "rejected",
+      "numerical_flags": [
+        "R\u00b2=-0.866 very low",
+        "R\u00b2_log=-1.119 very low",
+        "\u03c7\u00b2_r=6041.6 >> 1",
+        "systematic residual structure",
+        "residuals grow at high V \u2014 possible missing Rs",
+        "RMS residual = 29.4% of J_max"
+      ],
+      "residual_pattern": "high-V systematic",
+      "physical_verdict": "unreasonable",
+      "physical_reasoning": "The fit has completely failed with negative R\u00b2 values, non-converged parameters (NaN errors), and a reduced chi-squared exceeding 6000. The fitted J0 is 6-9 orders of magnitude too high and phi_t is unrealistically shallow for ZnO. While eps_r happens to be reasonable, this is likely coincidental. Poole-Frenkel emission is definitively not the dominant transport mechanism in this Au/ZnO system.",
+      "parameter_checks": [
+        {
+          "param_name": "J0",
+          "fitted_value": 0.001,
+          "fitted_error": "nan",
+          "units": "A/cm\u00b2",
+          "expected_range": "1e-12 to 1e-6 A/cm\u00b2",
+          "value_assessment": "unreasonable",
+          "reasoning": "J0 for Poole-Frenkel emission represents the low-field saturation current density and should be orders of magnitude smaller for ZnO (typically 10\u207b\u00b9\u00b2 to 10\u207b\u2078 A/cm\u00b2). A value of 1 mA/cm\u00b2 indicates complete fitting failure or wrong transport mechanism.",
+          "severity": "fatal"
+        },
+        {
+          "param_name": "phi_t",
+          "fitted_value": 0.1,
+          "fitted_error": "nan",
+          "units": "eV",
+          "expected_range": "0.3 to 1.2 eV",
+          "value_assessment": "unreasonable",
+          "reasoning": "The trap depth of 0.1 eV is far too shallow for Poole-Frenkel emission in ZnO, which typically has trap states at 0.5-1.0 eV below the conduction band. Such shallow traps would be thermally ionized at 300 K.",
+          "severity": "fatal"
+        },
+        {
+          "param_name": "eps_r",
+          "fitted_value": 8.5,
+          "fitted_error": "nan",
+          "units": "dimensionless",
+          "expected_range": "8.0 to 10.0",
+          "value_assessment": "reasonable",
+          "reasoning": "The optical dielectric constant of ZnO is typically 8.5-9.5, which matches the fitted value. However, this is the only parameter that appears physically plausible.",
+          "severity": "ok"
+        }
+      ],
+      "consistency_checks": [
+        {
+          "check_name": "nan_errors_indicate_failed_optimization",
+          "passed": false,
+          "reasoning": "All parameter errors are NaN, indicating the fitting algorithm did not converge or encountered numerical instability. The parameters likely represent initial guess values rather than true fitted results."
+        },
+        {
+          "check_name": "negative_R_squared",
+          "passed": false,
+          "reasoning": "Both R\u00b2 values are strongly negative (R\u00b2=-0.87, R\u00b2_log=-1.12), meaning the model fits worse than a horizontal line through the mean. This is definitive evidence that Poole-Frenkel emission is not the operative transport mechanism."
+        },
+        {
+          "check_name": "beta_PF_consistency",
+          "passed": false,
+          "reasoning": "With eps_r=8.5, the Poole-Frenkel coefficient \u03b2_PF should be ~2.0\u00d710\u207b\u2075 eV\u00b7m^(1/2)\u00b7V^(-1/2). The catastrophic fit quality suggests the field-dependent behavior in the data does not follow the \u221aE dependence characteristic of PF emission."
+        },
+        {
+          "check_name": "reduced_chi_squared",
+          "passed": false,
+          "reasoning": "\u03c7\u00b2_r = 6041.6 >> 1 indicates extreme model-data mismatch, confirming this mechanism cannot describe the observed transport behavior in ZnO with Au contacts."
+        }
+      ],
+      "suggested_next_if_bad": "Try Schottky emission (thermionic emission over barrier) or space-charge-limited current (SCLC) models, which are more appropriate for metal/ZnO interfaces. The Au/ZnO system typically forms a Schottky barrier (0.6-0.8 eV), making thermionic emission the primary mechanism at moderate fields. Check if data shows linear ln(J) vs \u221aV behavior (Schottky) or J\u221dV\u00b2 (SCLC) before refitting.",
       "final_verdict": "rejected",
       "verdict_rank": 1
     }
@@ -196,18 +428,18 @@
     "n_plausible": 0,
     "n_marginal": 0,
     "n_rejected": 4,
-    "best_model": "Dual_Diode_TE_Plus_Interface_Recombination",
+    "best_model": "Thermionic_Emission_Schottky",
     "best_verdict": "rejected",
-    "best_R2": -101373.194971,
-    "best_R2_log": -1.615074,
+    "best_R2": -6.004877,
+    "best_R2_log": 0.89919,
     "trigger_orchestrator": true
   },
-  "orchestrator_feedback": "The Au/ZnO contact shows an ideality factor of 2.05 and significant current at zero bias (1.14 \u00b5A/cm\u00b2), indicating substantial interface recombination or tunneling contributions that cannot be captured by pure thermionic emission or space-charge models. Avoid single-mechanism models like pure Schottky emission, thermionic field emission, or SCLC with traps, as the near-ideal n\u22482 specifically points to recombination in the depletion region rather than trap-dominated transport or field emission. The dual diode model failed catastrophically (R\u00b2=-101373), suggesting the data may exhibit non-monotonic features, shunt leakage, or measurement artifacts that violate basic diode assumptions. Try instead an equivalent circuit combining parallel Schottky emission with a shunt resistance path to capture the zero-bias leakage, or consider a Schottky diode with interface states/recombination velocity as a physically distinct mechanism from bulk thermionic emission. The high zero-bias current and n\u22482 strongly constrain the search toward models explicitly incorporating interface recombination (via surface states or interface defects) or parallel conduction paths rather than bulk-limited transport mechanisms.",
-  "final_report": "====================================================================\n  AGENT IV \u2014 Analysis Report\n  Material  : Data as is, Material is ZnO with Au contacts\n  Timestamp : 2026-05-08 20:24 UTC\n  Iteration : 2\n  T         : 300 K\n====================================================================\n\n  [REJECTED]  Thermionic_Field_Emission_TFE\n             R\u00b2=None  R\u00b2_log=None  \u03c7\u00b2_r=None\n  [REJECTED]  Schottky_Emission_With_Image_Force_And_Series_R\n             R\u00b2=None  R\u00b2_log=None  \u03c7\u00b2_r=None\n  [REJECTED]  Space_Charge_Limited_Current_With_Exponential_Traps\n             R\u00b2=None  R\u00b2_log=None  \u03c7\u00b2_r=None\n  [REJECTED]  Dual_Diode_TE_Plus_Interface_Recombination\n             R\u00b2=-101373.194971  R\u00b2_log=-1.615074  \u03c7\u00b2_r=96021964.9425\n\n\nORCHESTRATOR FEEDBACK\n--------------------------------------------------\nThe Au/ZnO contact shows an ideality factor of 2.05 and significant current at zero bias (1.14 \u00b5A/cm\u00b2), indicating substantial interface recombination or tunneling contributions that cannot be captured by pure thermionic emission or space-charge models. Avoid single-mechanism models like pure Schottky emission, thermionic field emission, or SCLC with traps, as the near-ideal n\u22482 specifically points to recombination in the depletion region rather than trap-dominated transport or field emission. The dual diode model failed catastrophically (R\u00b2=-101373), suggesting the data may exhibit non-monotonic features, shunt leakage, or measurement artifacts that violate basic diode assumptions. Try instead an equivalent circuit combining parallel Schottky emission with a shunt resistance path to capture the zero-bias leakage, or consider a Schottky diode with interface states/recombination velocity as a physically distinct mechanism from bulk thermionic emission. The high zero-bias current and n\u22482 strongly constrain the search toward models explicitly incorporating interface recombination (via surface states or interface defects) or parallel conduction paths rather than bulk-limited transport mechanisms.\n\n====================================================================",
+  "orchestrator_feedback": "The ideality factor of 2.05 strongly suggests recombination-dominated transport rather than pure thermionic emission, yet all barrier-based models failed with unreasonable barrier heights (phi_B=0.726 eV, phi_TAT=0.176 eV) indicating these mechanisms are inappropriate for this ZnO-Au system. Avoid Schottky/thermionic emission models and trap-assisted tunneling since the log-scale fits (R\u00b2_log ~0.89) capture curvature but yield physically meaningless parameters, particularly the n=3.79 extracted from thermionic fits which far exceeds recombination limits. The SCLC and Poole-Frenkel models showed poor fits (R\u00b2_log=0.64 and -1.12 respectively), ruling out bulk-limited conduction mechanisms. Instead, try equivalent circuits combining multiple parallel conduction paths: a recombination current component (exponential with n\u22482) plus either a defect-assisted hopping term or grain boundary-limited transport model, since polycrystalline ZnO often exhibits such mixed conduction. The substantial current density at zero bias (J\u2080=1.14\u00d710\u207b\u2076 A/cm\u00b2) and near-ideal n=2.05 point toward interface recombination centers rather than bulk or injection-limited processes, so focus on interface state recombination models with explicit series resistance.",
+  "final_report": "====================================================================\n  AGENT IV \u2014 Analysis Report\n  Material  : Data as is, Material is ZnO with Au contacts\n  Timestamp : 2026-05-08 20:32 UTC\n  Iteration : 1\n  T         : 300 K\n====================================================================\n\n  [REJECTED]  Thermionic_Emission_Schottky\n             R\u00b2=-6.004877  R\u00b2_log=0.89919  \u03c7\u00b2_r=713.354\n  [REJECTED]  Trap_Assisted_Tunneling_TAT\n             R\u00b2=-7.981901  R\u00b2_log=0.88962  \u03c7\u00b2_r=860.2829\n  [REJECTED]  SCLC_Single_Trap_Level\n             R\u00b2=-0.116551  R\u00b2_log=0.637425  \u03c7\u00b2_r=29845.0204\n  [REJECTED]  Poole_Frenkel_Emission\n             R\u00b2=-0.865932  R\u00b2_log=-1.119213  \u03c7\u00b2_r=6041.5662\n\n\nORCHESTRATOR FEEDBACK\n--------------------------------------------------\nThe ideality factor of 2.05 strongly suggests recombination-dominated transport rather than pure thermionic emission, yet all barrier-based models failed with unreasonable barrier heights (phi_B=0.726 eV, phi_TAT=0.176 eV) indicating these mechanisms are inappropriate for this ZnO-Au system. Avoid Schottky/thermionic emission models and trap-assisted tunneling since the log-scale fits (R\u00b2_log ~0.89) capture curvature but yield physically meaningless parameters, particularly the n=3.79 extracted from thermionic fits which far exceeds recombination limits. The SCLC and Poole-Frenkel models showed poor fits (R\u00b2_log=0.64 and -1.12 respectively), ruling out bulk-limited conduction mechanisms. Instead, try equivalent circuits combining multiple parallel conduction paths: a recombination current component (exponential with n\u22482) plus either a defect-assisted hopping term or grain boundary-limited transport model, since polycrystalline ZnO often exhibits such mixed conduction. The substantial current density at zero bias (J\u2080=1.14\u00d710\u207b\u2076 A/cm\u00b2) and near-ideal n=2.05 point toward interface recombination centers rather than bulk or injection-limited processes, so focus on interface state recombination models with explicit series resistance.\n\n====================================================================",
   "orchestrator_instructions": {
     "trigger": true,
-    "feedback_for_agent1": "The Au/ZnO contact shows an ideality factor of 2.05 and significant current at zero bias (1.14 \u00b5A/cm\u00b2), indicating substantial interface recombination or tunneling contributions that cannot be captured by pure thermionic emission or space-charge models. Avoid single-mechanism models like pure Schottky emission, thermionic field emission, or SCLC with traps, as the near-ideal n\u22482 specifically points to recombination in the depletion region rather than trap-dominated transport or field emission. The dual diode model failed catastrophically (R\u00b2=-101373), suggesting the data may exhibit non-monotonic features, shunt leakage, or measurement artifacts that violate basic diode assumptions. Try instead an equivalent circuit combining parallel Schottky emission with a shunt resistance path to capture the zero-bias leakage, or consider a Schottky diode with interface states/recombination velocity as a physically distinct mechanism from bulk thermionic emission. The high zero-bias current and n\u22482 strongly constrain the search toward models explicitly incorporating interface recombination (via surface states or interface defects) or parallel conduction paths rather than bulk-limited transport mechanisms.",
-    "next_iteration": 3,
+    "feedback_for_agent1": "The ideality factor of 2.05 strongly suggests recombination-dominated transport rather than pure thermionic emission, yet all barrier-based models failed with unreasonable barrier heights (phi_B=0.726 eV, phi_TAT=0.176 eV) indicating these mechanisms are inappropriate for this ZnO-Au system. Avoid Schottky/thermionic emission models and trap-assisted tunneling since the log-scale fits (R\u00b2_log ~0.89) capture curvature but yield physically meaningless parameters, particularly the n=3.79 extracted from thermionic fits which far exceeds recombination limits. The SCLC and Poole-Frenkel models showed poor fits (R\u00b2_log=0.64 and -1.12 respectively), ruling out bulk-limited conduction mechanisms. Instead, try equivalent circuits combining multiple parallel conduction paths: a recombination current component (exponential with n\u22482) plus either a defect-assisted hopping term or grain boundary-limited transport model, since polycrystalline ZnO often exhibits such mixed conduction. The substantial current density at zero bias (J\u2080=1.14\u00d710\u207b\u2076 A/cm\u00b2) and near-ideal n=2.05 point toward interface recombination centers rather than bulk or injection-limited processes, so focus on interface state recombination models with explicit series resistance.",
+    "next_iteration": 2,
     "reason": "No accepted/plausible model"
   }
 }
