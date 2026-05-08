@@ -1,8 +1,8 @@
 {
   "meta": {
     "agent": "agent1_hypothesis",
-    "timestamp": "2026-05-08T21:14:08.930019+00:00",
-    "iteration": 1,
+    "timestamp": "2026-05-08T21:17:08.720928+00:00",
+    "iteration": 2,
     "material_prompt": "Data as is, Material is ZnO with Au contacts",
     "geometry": {
       "area_cm2": 0.01,
@@ -1310,168 +1310,188 @@
   },
   "hypotheses": [
     {
-      "mechanism_name": "Thermionic_Emission_Schottky",
-      "description": "Thermionic emission over the Schottky barrier at the Au/ZnO interface, dominant in forward bias. Ideality factor ~2 suggests interface states or barrier inhomogeneity.",
+      "mechanism_name": "Recombination_Diode_n2_Series_R",
+      "description": "Interface recombination-dominated diode with fixed ideality factor n=2, accounting for voltage drop across series resistance. Dominant mechanism for Au/ZnO junctions with high recombination velocity at the metal-semiconductor interface.",
       "dominant_regime": "forward",
-      "equation_latex": "J = A^* T^2 \\exp\\left(-\\frac{q\\phi_B}{k_B T}\\right) \\left[\\exp\\left(\\frac{qV}{n k_B T}\\right) - 1\\right]",
-      "equation_python": "lambda V, E, T, p: p['A_star'] * T**2 * np.exp(-p['phi_B'] / (8.617e-5 * T)) * (np.exp(V / (p['n_id'] * 0.02585 * T / 300)) - 1)",
+      "equation_latex": "J = J_{0,rec} \\left[ \\exp\\left(\\frac{q(V - J R_s A)}{2 k_B T}\\right) - 1 \\right]",
+      "equation_python": "lambda V, E, T, p: p['J0_rec'] * (np.exp(1.602e-19 * (V - p['J0_rec'] * (np.exp(1.602e-19 * V / (2 * 1.381e-23 * T)) - 1) * p['Rs'] * p['Area']) / (2 * 1.381e-23 * T)) - 1)",
       "free_params": [
         {
-          "name": "phi_B",
-          "symbol": "\u03c6_B",
-          "units": "eV",
-          "init_guess": 0.75,
-          "bounds_low": 0.4,
-          "bounds_high": 1.2
-        },
-        {
-          "name": "n_id",
-          "symbol": "n",
-          "units": "dimensionless",
-          "init_guess": 2.05,
-          "bounds_low": 1.5,
-          "bounds_high": 3.0
-        },
-        {
-          "name": "A_star",
-          "symbol": "A^*",
-          "units": "A/(cm\u00b2\u00b7K\u00b2)",
-          "init_guess": 32.0,
-          "bounds_low": 10.0,
-          "bounds_high": 100.0
-        }
-      ],
-      "normalization_needed": [
-        "V",
-        "J"
-      ],
-      "literature_ref": "Rhoderick & Williams, 1988, Metal-Semiconductor Contacts",
-      "priority": 1
-    },
-    {
-      "mechanism_name": "Trap_Assisted_Tunneling_TAT",
-      "description": "Trap-assisted tunneling through localized states in ZnO band gap, mediated by oxygen vacancies or grain boundaries. Dominant at moderate fields with exponential voltage dependence.",
-      "dominant_regime": "both",
-      "equation_latex": "J = J_0 \\exp\\left(\\frac{V}{V_0}\\right)",
-      "equation_python": "lambda V, E, T, p: p['J0_TAT'] * np.exp(V / p['V0_TAT'])",
-      "free_params": [
-        {
-          "name": "J0_TAT",
-          "symbol": "J_0",
+          "name": "J0_rec",
+          "symbol": "J_{0,rec}",
           "units": "A/cm\u00b2",
-          "init_guess": 1e-07,
-          "bounds_low": 1e-10,
+          "init_guess": 1.1e-06,
+          "bounds_low": 1e-09,
           "bounds_high": 0.0001
         },
         {
-          "name": "V0_TAT",
-          "symbol": "V_0",
-          "units": "V",
-          "init_guess": 0.3,
-          "bounds_low": 0.1,
-          "bounds_high": 1.0
+          "name": "Rs",
+          "symbol": "R_s",
+          "units": "\u03a9\u00b7cm\u00b2",
+          "init_guess": 0.2,
+          "bounds_low": 0.01,
+          "bounds_high": 100.0
+        },
+        {
+          "name": "Area",
+          "symbol": "A",
+          "units": "cm\u00b2",
+          "init_guess": 0.01,
+          "bounds_low": 0.01,
+          "bounds_high": 0.01
         }
       ],
       "normalization_needed": [
         "V",
-        "J"
-      ],
-      "literature_ref": "Simmons, 1967, J. Appl. Phys.",
-      "priority": 2
-    },
-    {
-      "mechanism_name": "SCLC_with_Traps",
-      "description": "Space-charge-limited current with exponential trap distribution in ZnO. At low voltages Ohmic, transitions to Child's law (J\u221dV\u00b2) at higher bias when traps fill.",
-      "dominant_regime": "forward",
-      "equation_latex": "J = \\frac{9}{8} \\epsilon_r \\epsilon_0 \\mu \\theta \\frac{V^2}{d^3}, \\quad \\theta = \\left(\\frac{V}{V_{TFL}}\\right)^{l-1}",
-      "equation_python": "lambda V, E, T, p: (9/8) * p['eps_r'] * 8.854e-14 * p['mu_eff'] * (V / p['V_TFL'])**(p['l_trap'] - 1) * V**2 / (p['d_nm']*1e-7)**3",
-      "free_params": [
-        {
-          "name": "mu_eff",
-          "symbol": "\u03bc",
-          "units": "cm\u00b2/(V\u00b7s)",
-          "init_guess": 0.1,
-          "bounds_low": 0.0001,
-          "bounds_high": 10.0
-        },
-        {
-          "name": "eps_r",
-          "symbol": "\u03b5_r",
-          "units": "dimensionless",
-          "init_guess": 8.5,
-          "bounds_low": 5.0,
-          "bounds_high": 15.0
-        },
-        {
-          "name": "V_TFL",
-          "symbol": "V_{TFL}",
-          "units": "V",
-          "init_guess": 0.5,
-          "bounds_low": 0.1,
-          "bounds_high": 2.0
-        },
-        {
-          "name": "l_trap",
-          "symbol": "l",
-          "units": "dimensionless",
-          "init_guess": 1.5,
-          "bounds_low": 1.0,
-          "bounds_high": 3.0
-        },
-        {
-          "name": "d_nm",
-          "symbol": "d",
-          "units": "nm",
-          "init_guess": 200.0,
-          "bounds_low": 200.0,
-          "bounds_high": 200.0
-        }
-      ],
-      "normalization_needed": [
-        "V",
-        "J"
-      ],
-      "literature_ref": "Lampert & Mark, 1970, Current Injection in Solids",
-      "priority": 3
-    },
-    {
-      "mechanism_name": "Poole_Frenkel_Emission",
-      "description": "Field-enhanced thermal emission from traps in ZnO bulk via barrier lowering. ln(J/E) linear with \u221aE, common in polycrystalline oxides with high defect density.",
-      "dominant_regime": "high-field",
-      "equation_latex": "J = q \\mu N_c E \\exp\\left(-\\frac{q(\\phi_t - \\sqrt{qE/(\\pi\\epsilon_r\\epsilon_0)})}{k_B T}\\right)",
-      "equation_python": "lambda V, E, T, p: p['sigma_0'] * E * np.exp(-p['phi_t'] / (8.617e-5 * T)) * np.exp(p['beta_PF'] * np.sqrt(np.abs(E)) / (8.617e-5 * T))",
-      "free_params": [
-        {
-          "name": "sigma_0",
-          "symbol": "\u03c3_0",
-          "units": "S/cm",
-          "init_guess": 1e-09,
-          "bounds_low": 1e-12,
-          "bounds_high": 1e-06
-        },
-        {
-          "name": "phi_t",
-          "symbol": "\u03c6_t",
-          "units": "eV",
-          "init_guess": 0.6,
-          "bounds_low": 0.2,
-          "bounds_high": 1.5
-        },
-        {
-          "name": "beta_PF",
-          "symbol": "\u03b2_{PF}",
-          "units": "eV\u00b7cm^{1/2}/V^{1/2}",
-          "init_guess": 2.5e-05,
-          "bounds_low": 1e-05,
-          "bounds_high": 5e-05
-        }
-      ],
-      "normalization_needed": [
-        "E_MVcm",
         "J",
         "lnJ"
       ],
-      "literature_ref": "Frenkel, 1938, Phys. Rev.; Sze & Ng, 2006",
+      "literature_ref": "Sze & Ng, Physics of Semiconductor Devices, 3rd ed., 2007; Rhoderick & Williams, Metal-Semiconductor Contacts, 1988",
+      "priority": 1
+    },
+    {
+      "mechanism_name": "Two_Diode_Model_Series_R",
+      "description": "Parallel combination of diffusion diode (n=1) and recombination diode (n=2) with series resistance. Standard equivalent circuit for real diodes capturing both bulk diffusion and interface/space-charge recombination in Au/ZnO junctions.",
+      "dominant_regime": "forward",
+      "equation_latex": "J = J_{01} \\left[ \\exp\\left(\\frac{q(V - J R_s A)}{k_B T}\\right) - 1 \\right] + J_{02} \\left[ \\exp\\left(\\frac{q(V - J R_s A)}{2 k_B T}\\right) - 1 \\right]",
+      "equation_python": "lambda V, E, T, p: p['J01'] * (np.exp(1.602e-19 * (V - (p['J01'] * (np.exp(1.602e-19 * V / (1.381e-23 * T)) - 1) + p['J02'] * (np.exp(1.602e-19 * V / (2 * 1.381e-23 * T)) - 1)) * p['Rs'] * p['Area']) / (1.381e-23 * T)) - 1) + p['J02'] * (np.exp(1.602e-19 * (V - (p['J01'] * (np.exp(1.602e-19 * V / (1.381e-23 * T)) - 1) + p['J02'] * (np.exp(1.602e-19 * V / (2 * 1.381e-23 * T)) - 1)) * p['Rs'] * p['Area']) / (2 * 1.381e-23 * T)) - 1)",
+      "free_params": [
+        {
+          "name": "J01",
+          "symbol": "J_{01}",
+          "units": "A/cm\u00b2",
+          "init_guess": 1e-08,
+          "bounds_low": 1e-12,
+          "bounds_high": 1e-05
+        },
+        {
+          "name": "J02",
+          "symbol": "J_{02}",
+          "units": "A/cm\u00b2",
+          "init_guess": 1.1e-06,
+          "bounds_low": 1e-09,
+          "bounds_high": 0.0001
+        },
+        {
+          "name": "Rs",
+          "symbol": "R_s",
+          "units": "\u03a9\u00b7cm\u00b2",
+          "init_guess": 0.2,
+          "bounds_low": 0.01,
+          "bounds_high": 100.0
+        },
+        {
+          "name": "Area",
+          "symbol": "A",
+          "units": "cm\u00b2",
+          "init_guess": 0.01,
+          "bounds_low": 0.01,
+          "bounds_high": 0.01
+        }
+      ],
+      "normalization_needed": [
+        "V",
+        "J",
+        "lnJ"
+      ],
+      "literature_ref": "Green, Solar Cells: Operating Principles, Technology and System Applications, 1982; Sze & Ng, 2007",
+      "priority": 2
+    },
+    {
+      "mechanism_name": "SRH_Recombination_Midgap_Series_R",
+      "description": "Shockley-Read-Hall recombination through midgap interface states at Au/ZnO junction, yielding exponential J-V with n=2 characteristic. Voltage drop includes series resistance from ZnO bulk and contact resistance.",
+      "dominant_regime": "forward",
+      "equation_latex": "J = J_{0,SRH} \\left[ \\exp\\left(\\frac{q(V - J R_s A)}{2 k_B T}\\right) - 1 \\right], \\quad J_{0,SRH} = q n_i S_r",
+      "equation_python": "lambda V, E, T, p: p['ni'] * 1.602e-19 * p['Sr'] * (np.exp(1.602e-19 * (V - p['ni'] * 1.602e-19 * p['Sr'] * (np.exp(1.602e-19 * V / (2 * 1.381e-23 * T)) - 1) * p['Rs'] * p['Area']) / (2 * 1.381e-23 * T)) - 1)",
+      "free_params": [
+        {
+          "name": "ni",
+          "symbol": "n_i",
+          "units": "cm\u207b\u00b3",
+          "init_guess": 1000000.0,
+          "bounds_low": 10000.0,
+          "bounds_high": 100000000.0
+        },
+        {
+          "name": "Sr",
+          "symbol": "S_r",
+          "units": "cm/s",
+          "init_guess": 10000.0,
+          "bounds_low": 1000.0,
+          "bounds_high": 100000.0
+        },
+        {
+          "name": "Rs",
+          "symbol": "R_s",
+          "units": "\u03a9\u00b7cm\u00b2",
+          "init_guess": 0.2,
+          "bounds_low": 0.01,
+          "bounds_high": 100.0
+        },
+        {
+          "name": "Area",
+          "symbol": "A",
+          "units": "cm\u00b2",
+          "init_guess": 0.01,
+          "bounds_low": 0.01,
+          "bounds_high": 0.01
+        }
+      ],
+      "normalization_needed": [
+        "V",
+        "J",
+        "lnJ"
+      ],
+      "literature_ref": "Sah, Noyce & Shockley, Proc. IRE, 1957; Schroder, Semiconductor Material and Device Characterization, 2006",
+      "priority": 3
+    },
+    {
+      "mechanism_name": "Interface_Recombination_Distributed_Traps_Series_R",
+      "description": "Recombination via exponential distribution of interface trap states near Au/ZnO interface, producing effective ideality factor n\u22482. Includes series resistance and accounts for trap density distribution across the bandgap.",
+      "dominant_regime": "forward",
+      "equation_latex": "J = J_{00} \\exp\\left(\\frac{\\alpha q (V - J R_s A)}{k_B T}\\right), \\quad \\alpha = \\frac{1}{2} \\text{ for midgap}",
+      "equation_python": "lambda V, E, T, p: p['J00'] * np.exp(p['alpha'] * 1.602e-19 * (V - p['J00'] * np.exp(p['alpha'] * 1.602e-19 * V / (1.381e-23 * T)) * p['Rs'] * p['Area']) / (1.381e-23 * T))",
+      "free_params": [
+        {
+          "name": "J00",
+          "symbol": "J_{00}",
+          "units": "A/cm\u00b2",
+          "init_guess": 1e-09,
+          "bounds_low": 1e-12,
+          "bounds_high": 1e-05
+        },
+        {
+          "name": "alpha",
+          "symbol": "\\alpha",
+          "units": "dimensionless",
+          "init_guess": 0.5,
+          "bounds_low": 0.4,
+          "bounds_high": 0.6
+        },
+        {
+          "name": "Rs",
+          "symbol": "R_s",
+          "units": "\u03a9\u00b7cm\u00b2",
+          "init_guess": 0.2,
+          "bounds_low": 0.01,
+          "bounds_high": 100.0
+        },
+        {
+          "name": "Area",
+          "symbol": "A",
+          "units": "cm\u00b2",
+          "init_guess": 0.01,
+          "bounds_low": 0.01,
+          "bounds_high": 0.01
+        }
+      ],
+      "normalization_needed": [
+        "V",
+        "J",
+        "lnJ",
+        "logJ"
+      ],
+      "literature_ref": "Card & Rhoderick, J. Phys. D: Appl. Phys., 1971; Werner & G\u00fcttler, J. Appl. Phys., 1991",
       "priority": 4
     }
   ],
