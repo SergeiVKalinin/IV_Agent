@@ -1,8 +1,8 @@
 {
   "meta": {
     "agent": "agent1_hypothesis",
-    "timestamp": "2026-05-08T19:27:04.667954+00:00",
-    "iteration": 2,
+    "timestamp": "2026-05-08T19:35:43.525207+00:00",
+    "iteration": 3,
     "material_prompt": "Data as is, Material is ZnO with Au contacts",
     "geometry": {
       "area_cm2": 0.01,
@@ -1310,224 +1310,191 @@
   },
   "hypotheses": [
     {
-      "mechanism_name": "Two-Diode Model (Schottky + Interface Recombination)",
-      "description": "Parallel combination of ideal Schottky emission (n1=1-2) and interface state recombination (n2=2-4.5) to explain observed ideality n=3.23. Both diodes share series resistance Rs and shunt resistance Rsh in equivalent circuit.",
+      "mechanism_name": "Single_diode_recombination_with_parasitics",
+      "description": "Dominant recombination current through deep trap states (likely oxygen vacancies at Au/ZnO interface) with free ideality factor n\u22483.2, including series and shunt resistances to capture voltage-dependent and leakage effects.",
       "dominant_regime": "both",
-      "equation_latex": "J = J_{01}\\left[\\exp\\left(\\frac{q(V - JR_s A)}{n_1 k T}\\right)-1\\right] + J_{02}\\left[\\exp\\left(\\frac{q(V - JR_s A)}{n_2 k T}\\right)-1\\right] + \\frac{V - JR_s A}{R_{sh}}",
-      "equation_python": "lambda V, E, T, p: (lambda Vapp: p['J01']*(np.exp(np.minimum(1.602e-19*(Vapp)/(p['n1']*1.381e-23*T), 100))-1) + p['J02']*(np.exp(np.minimum(1.602e-19*(Vapp)/(p['n2']*1.381e-23*T), 100))-1) + Vapp/p['Rsh'])(V - 0*V)",
+      "equation_latex": "J_{total} = \\frac{V_{app} - J \\cdot R_s}{R_{sh}} + J_0 \\exp\\left(\\frac{q(V_{app} - J \\cdot R_s)}{n k T}\\right)",
+      "equation_python": "lambda V, E, T, p: (lambda J_implicit: J_implicit)(np.array([np.interp(v, [0, 10], [0, 10]) if v==0 else float(sp.optimize.fsolve(lambda J: J - (v - J*p['Rs'])/p['Rsh'] - p['J0']*np.exp(1.60218e-19*(v - J*p['Rs'])/(p['n']*1.38065e-23*T)), x0=p['J0'])) for v in np.atleast_1d(V)]))",
       "free_params": [
         {
-          "name": "J01",
-          "symbol": "J_{01}",
+          "name": "J0",
+          "symbol": "J_0",
           "units": "A/cm\u00b2",
-          "init_guess": 1e-08,
+          "init_guess": 1e-06,
           "bounds_low": 1e-12,
-          "bounds_high": 1e-05
+          "bounds_high": 0.001
         },
         {
-          "name": "n1",
-          "symbol": "n_1",
+          "name": "n",
+          "symbol": "n",
           "units": "dimensionless",
-          "init_guess": 1.5,
-          "bounds_low": 1.0,
-          "bounds_high": 2.0
-        },
-        {
-          "name": "J02",
-          "symbol": "J_{02}",
-          "units": "A/cm\u00b2",
-          "init_guess": 1e-09,
-          "bounds_low": 1e-14,
-          "bounds_high": 1e-06
-        },
-        {
-          "name": "n2",
-          "symbol": "n_2",
-          "units": "dimensionless",
-          "init_guess": 3.5,
-          "bounds_low": 2.0,
-          "bounds_high": 4.5
+          "init_guess": 3.2,
+          "bounds_low": 1.5,
+          "bounds_high": 8.0
         },
         {
           "name": "Rs",
           "symbol": "R_s",
           "units": "\u03a9\u00b7cm\u00b2",
-          "init_guess": 0.6,
-          "bounds_low": 0.5,
-          "bounds_high": 1.5
+          "init_guess": 0.72,
+          "bounds_low": 0.01,
+          "bounds_high": 50.0
         },
         {
           "name": "Rsh",
           "symbol": "R_{sh}",
           "units": "\u03a9\u00b7cm\u00b2",
           "init_guess": 9897.0,
-          "bounds_low": 8000.0,
-          "bounds_high": 12000.0
+          "bounds_low": 100.0,
+          "bounds_high": 1000000.0
         }
       ],
       "normalization_needed": [
         "V",
         "J"
       ],
-      "literature_ref": "Sze & Ng, Physics of Semiconductor Devices, 3rd Ed., 2007",
+      "literature_ref": "Sze & Ng, Physics of Semiconductor Devices, 3rd ed., 2007",
       "priority": 1
     },
     {
-      "mechanism_name": "Voltage-Dependent Contact Resistance with Schottky",
-      "description": "Distributed contact resistance model where effective Rs decreases with voltage due to current spreading from contact edges, combined with fixed Schottky barrier. Rs_eff(V) = Rs0/[1+(V/V_spread)^alpha] captures lateral current flow geometry.",
-      "dominant_regime": "forward",
-      "equation_latex": "J = J_0\\left[\\exp\\left(\\frac{q(V - J R_{eff}(V) A)}{n k T}\\right)-1\\right], \\quad R_{eff}(V) = \\frac{R_{s0}}{1 + (V/V_{spread})^{\\alpha}}",
-      "equation_python": "lambda V, E, T, p: p['J0']*(np.exp(np.minimum(1.602e-19*(V - 0*V)/(p['n']*1.381e-23*T), 100))-1) * (1 + (np.abs(V)/p['V_spread'])**p['alpha'])",
-      "free_params": [
-        {
-          "name": "J0",
-          "symbol": "J_0",
-          "units": "A/cm\u00b2",
-          "init_guess": 1e-08,
-          "bounds_low": 1e-12,
-          "bounds_high": 0.0001
-        },
-        {
-          "name": "n",
-          "symbol": "n",
-          "units": "dimensionless",
-          "init_guess": 2.0,
-          "bounds_low": 1.0,
-          "bounds_high": 3.0
-        },
-        {
-          "name": "Rs0",
-          "symbol": "R_{s0}",
-          "units": "\u03a9\u00b7cm\u00b2",
-          "init_guess": 1.0,
-          "bounds_low": 0.5,
-          "bounds_high": 5.0
-        },
-        {
-          "name": "V_spread",
-          "symbol": "V_{spread}",
-          "units": "V",
-          "init_guess": 0.4,
-          "bounds_low": 0.1,
-          "bounds_high": 1.0
-        },
-        {
-          "name": "alpha",
-          "symbol": "\\alpha",
-          "units": "dimensionless",
-          "init_guess": 2.0,
-          "bounds_low": 0.5,
-          "bounds_high": 4.0
-        }
-      ],
-      "normalization_needed": [
-        "V",
-        "J"
-      ],
-      "literature_ref": "Berger, Solid-State Electron., 1972",
-      "priority": 2
-    },
-    {
-      "mechanism_name": "Schottky + Trap-Assisted Tunneling Hybrid",
-      "description": "Series combination where Schottky emission dominates low-field forward bias while trap-assisted tunneling (TAT) through midgap states becomes significant at moderate reverse and high forward fields. Current is limited by the slower process at each bias point.",
+      "mechanism_name": "Grain_boundary_limited_transport",
+      "description": "Thermionic emission over grain boundary potential barriers modulated by interface trapped charge in polycrystalline ZnO, with elevated ideality factor from barrier height fluctuations and trap-assisted recombination at grain boundaries.",
       "dominant_regime": "both",
-      "equation_latex": "J = J_S\\exp\\left(\\frac{qV}{n k T}\\right) + J_{TAT}\\exp\\left(\\frac{E}{E_0}\\right)\\sinh\\left(\\frac{qV}{2kT}\\right)",
-      "equation_python": "lambda V, E, T, p: p['Js']*np.exp(np.minimum(1.602e-19*V/(p['n']*1.381e-23*T), 100)) + p['J_TAT']*np.exp(E/p['E0'])*np.sinh(np.minimum(1.602e-19*V/(2*1.381e-23*T), 100))",
+      "equation_latex": "J_{total} = \\frac{V_{app} - J \\cdot R_s}{R_{sh}} + J_{gb} \\exp\\left(\\frac{q(V_{app} - J \\cdot R_s)}{n_{gb} k T}\\right)",
+      "equation_python": "lambda V, E, T, p: (lambda J_implicit: J_implicit)(np.array([np.interp(v, [0, 10], [0, 10]) if v==0 else float(sp.optimize.fsolve(lambda J: J - (v - J*p['Rs'])/p['Rsh'] - p['J_gb']*np.exp(1.60218e-19*(v - J*p['Rs'])/(p['n_gb']*1.38065e-23*T)), x0=p['J_gb'])) for v in np.atleast_1d(V)]))",
       "free_params": [
         {
-          "name": "Js",
-          "symbol": "J_S",
+          "name": "J_gb",
+          "symbol": "J_{gb}",
           "units": "A/cm\u00b2",
-          "init_guess": 1e-09,
-          "bounds_low": 1e-14,
-          "bounds_high": 1e-05
-        },
-        {
-          "name": "n",
-          "symbol": "n",
-          "units": "dimensionless",
-          "init_guess": 2.0,
-          "bounds_low": 1.0,
-          "bounds_high": 3.5
-        },
-        {
-          "name": "J_TAT",
-          "symbol": "J_{TAT}",
-          "units": "A/cm\u00b2",
-          "init_guess": 1e-06,
-          "bounds_low": 1e-10,
+          "init_guess": 5e-07,
+          "bounds_low": 1e-12,
           "bounds_high": 0.001
         },
         {
-          "name": "E0",
-          "symbol": "E_0",
-          "units": "MV/cm",
-          "init_guess": 0.5,
-          "bounds_low": 0.1,
-          "bounds_high": 2.0
+          "name": "n_gb",
+          "symbol": "n_{gb}",
+          "units": "dimensionless",
+          "init_guess": 3.2,
+          "bounds_low": 1.5,
+          "bounds_high": 8.0
+        },
+        {
+          "name": "Rs",
+          "symbol": "R_s",
+          "units": "\u03a9\u00b7cm\u00b2",
+          "init_guess": 0.72,
+          "bounds_low": 0.01,
+          "bounds_high": 50.0
+        },
+        {
+          "name": "Rsh",
+          "symbol": "R_{sh}",
+          "units": "\u03a9\u00b7cm\u00b2",
+          "init_guess": 9897.0,
+          "bounds_low": 100.0,
+          "bounds_high": 1000000.0
         }
       ],
       "normalization_needed": [
         "V",
-        "E_MVcm",
         "J"
       ],
-      "literature_ref": "Hurkx et al., IEEE Trans. Electron Devices, 1992",
+      "literature_ref": "Seto, J. Appl. Phys., 1975; Orton & Powell, Rep. Prog. Phys., 1980",
+      "priority": 2
+    },
+    {
+      "mechanism_name": "Interface_recombination_single_trap",
+      "description": "Recombination current through a single dominant trap level at the Au/ZnO interface, likely oxygen vacancy V_O with energy near mid-gap, characterized by high ideality factor reflecting trap-mediated Shockley-Read-Hall recombination.",
+      "dominant_regime": "both",
+      "equation_latex": "J_{total} = \\frac{V_{app} - J \\cdot R_s}{R_{sh}} + J_{rec} \\exp\\left(\\frac{q(V_{app} - J \\cdot R_s)}{n_{rec} k T}\\right)",
+      "equation_python": "lambda V, E, T, p: (lambda J_implicit: J_implicit)(np.array([np.interp(v, [0, 10], [0, 10]) if v==0 else float(sp.optimize.fsolve(lambda J: J - (v - J*p['Rs'])/p['Rsh'] - p['J_rec']*np.exp(1.60218e-19*(v - J*p['Rs'])/(p['n_rec']*1.38065e-23*T)), x0=p['J_rec'])) for v in np.atleast_1d(V)]))",
+      "free_params": [
+        {
+          "name": "J_rec",
+          "symbol": "J_{rec}",
+          "units": "A/cm\u00b2",
+          "init_guess": 2e-06,
+          "bounds_low": 1e-12,
+          "bounds_high": 0.001
+        },
+        {
+          "name": "n_rec",
+          "symbol": "n_{rec}",
+          "units": "dimensionless",
+          "init_guess": 3.2,
+          "bounds_low": 1.5,
+          "bounds_high": 8.0
+        },
+        {
+          "name": "Rs",
+          "symbol": "R_s",
+          "units": "\u03a9\u00b7cm\u00b2",
+          "init_guess": 0.72,
+          "bounds_low": 0.01,
+          "bounds_high": 50.0
+        },
+        {
+          "name": "Rsh",
+          "symbol": "R_{sh}",
+          "units": "\u03a9\u00b7cm\u00b2",
+          "init_guess": 9897.0,
+          "bounds_low": 100.0,
+          "bounds_high": 1000000.0
+        }
+      ],
+      "normalization_needed": [
+        "V",
+        "J"
+      ],
+      "literature_ref": "Shockley & Read, Phys. Rev., 1952; Hall, Phys. Rev., 1952",
       "priority": 3
     },
     {
-      "mechanism_name": "Three-Element Circuit: Schottky + Recombination + SCLC",
-      "description": "Triple parallel path model: ideal Schottky (n\u22481), interface recombination (n\u22483), and space-charge-limited current (V\u00b2) for high forward bias where injection exceeds thermal equilibrium. Each path has physical origin in different transport regimes.",
-      "dominant_regime": "forward",
-      "equation_latex": "J = J_{S}\\left[\\exp\\left(\\frac{qV}{n_1 k T}\\right)-1\\right] + J_{R}\\left[\\exp\\left(\\frac{qV}{n_2 k T}\\right)-1\\right] + \\frac{9\\epsilon\\mu V^2}{8d^3}",
-      "equation_python": "lambda V, E, T, p: p['Js']*(np.exp(np.minimum(1.602e-19*V/(p['n1']*1.381e-23*T), 100))-1) + p['Jr']*(np.exp(np.minimum(1.602e-19*V/(p['n2']*1.381e-23*T), 100))-1) + p['K_SCLC']*np.maximum(V, 0)**2",
+      "mechanism_name": "Ohmic_plus_exponential_leakage",
+      "description": "Phenomenological model capturing ohmic shunt leakage with superimposed exponential defect-assisted conduction (tunneling or hopping through distributed trap states in 200nm ZnO layer), without invoking specific thermionic emission physics.",
+      "dominant_regime": "both",
+      "equation_latex": "J_{total} = \\frac{V_{app} - J \\cdot R_s}{R_{sh}} + J_{leak} \\exp\\left(\\frac{|V_{app} - J \\cdot R_s|}{V_0}\\right)",
+      "equation_python": "lambda V, E, T, p: (lambda J_implicit: J_implicit)(np.array([np.interp(v, [0, 10], [0, 10]) if v==0 else float(sp.optimize.fsolve(lambda J: J - (v - J*p['Rs'])/p['Rsh'] - p['J_leak']*np.exp(np.abs(v - J*p['Rs'])/p['V0']), x0=p['J_leak'])) for v in np.atleast_1d(V)]))",
       "free_params": [
         {
-          "name": "Js",
-          "symbol": "J_S",
+          "name": "J_leak",
+          "symbol": "J_{leak}",
           "units": "A/cm\u00b2",
-          "init_guess": 1e-09,
-          "bounds_low": 1e-14,
-          "bounds_high": 1e-05
+          "init_guess": 1e-06,
+          "bounds_low": 1e-12,
+          "bounds_high": 0.001
         },
         {
-          "name": "n1",
-          "symbol": "n_1",
-          "units": "dimensionless",
-          "init_guess": 1.5,
-          "bounds_low": 1.0,
-          "bounds_high": 2.2
+          "name": "V0",
+          "symbol": "V_0",
+          "units": "V",
+          "init_guess": 0.15,
+          "bounds_low": 0.01,
+          "bounds_high": 2.0
         },
         {
-          "name": "Jr",
-          "symbol": "J_R",
-          "units": "A/cm\u00b2",
-          "init_guess": 1e-10,
-          "bounds_low": 1e-15,
-          "bounds_high": 1e-06
+          "name": "Rs",
+          "symbol": "R_s",
+          "units": "\u03a9\u00b7cm\u00b2",
+          "init_guess": 0.72,
+          "bounds_low": 0.01,
+          "bounds_high": 50.0
         },
         {
-          "name": "n2",
-          "symbol": "n_2",
-          "units": "dimensionless",
-          "init_guess": 3.2,
-          "bounds_low": 2.0,
-          "bounds_high": 4.5
-        },
-        {
-          "name": "K_SCLC",
-          "symbol": "K_{SCLC}",
-          "units": "A/(cm\u00b2\u00b7V\u00b2)",
-          "init_guess": 0.01,
-          "bounds_low": 1e-06,
-          "bounds_high": 1.0
+          "name": "Rsh",
+          "symbol": "R_{sh}",
+          "units": "\u03a9\u00b7cm\u00b2",
+          "init_guess": 9897.0,
+          "bounds_low": 100.0,
+          "bounds_high": 1000000.0
         }
       ],
       "normalization_needed": [
         "V",
         "J"
       ],
-      "literature_ref": "Rose, Phys. Rev., 1955; Lampert & Mark, 1970",
+      "literature_ref": "Rose, Phys. Rev., 1955; Lampert & Mark, Current Injection in Solids, 1970",
       "priority": 4
     }
   ],
