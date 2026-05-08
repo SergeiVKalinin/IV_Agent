@@ -1,40 +1,23 @@
 ====================================================================
   AGENT IV — Analysis Report
   Material  : Data as is, Material is ZnO with Au contacts
-  Timestamp : 2026-05-08 18:29 UTC
+  Timestamp : 2026-05-08 19:25 UTC
   Iteration : 1
   T         : 300 K
 ====================================================================
 
-VERDICT SUMMARY (4 models tested)
---------------------------------------------------
-  [REJECTED]  Schottky emission
-             R²=0.8101  R²_log=0.938553  χ²_r=113.3613
-  [REJECTED]  Space-charge-limited current with traps
-             R²=0.8052  R²_log=0.353071  χ²_r=194.5976
-  [REJECTED]  Poole-Frenkel emission
-             R²=-0.3937  R²_log=None  χ²_r=399.1095
-  [REJECTED]  Trap-assisted tunneling (TAT)
-             R²=0.2343  R²_log=-6.068673  χ²_r=368.4929
+  [REJECTED]  Trap_assisted_tunneling_with_Schottky
+             R²=0.810117  R²_log=0.938556  χ²_r=113.3613
+  [REJECTED]  Schottky_emission
+             R²=0.810124  R²_log=0.938553  χ²_r=113.3613
+  [REJECTED]  SCLC_single_trap_level
+             R²=-0.281588  R²_log=0.176869  χ²_r=214.5151
+  [REJECTED]  Poole_Frenkel_emission
+             R²=-0.393712  R²_log=-490.195812  χ²_r=399.1095
 
 
-REJECTED MODELS — BRIEF NOTES
+ORCHESTRATOR FEEDBACK
 --------------------------------------------------
-  Schottky emission
-    Numerical flags : R²=0.810 very low; R²_log=0.939 below threshold 0.98
-    Physical note   : While A* and φ_B individually fall within physically plausible ranges for Au/ZnO, the ideality facto
-  Space-charge-limited current with traps
-    Numerical flags : R²=0.805 very low; R²_log=0.353 very low (poor log-scale fit)
-    Physical note   : Two fatal issues invalidate this model: (1) the fitted thickness is 2.5× the actual device thickness
-  Poole-Frenkel emission
-    Numerical flags : R²=-0.394 very low; χ²_red=399.1 >> 1  (very poor fit)
-    Physical note   : The fitted Poole-Frenkel coefficient is an order of magnitude too small for ZnO's dielectric constan
-  Trap-assisted tunneling (TAT)
-    Numerical flags : R²=0.234 very low; R²_log=-6.069 very low (poor log-scale fit)
-    Physical note   : While the J0 central value is physically plausible, both parameters have catastrophically large unce
-
-ORCHESTRATOR FEEDBACK FOR NEXT ITERATION
---------------------------------------------------
-The repeated failure of Schottky emission due to unreasonably high ideality factor (n=5.45, data suggests n=3.23) indicates the junction is dominated by multi-step recombination or defect-assisted transport rather than simple thermionic emission over a single barrier. Space-charge-limited current models fail because the Au/ZnO interface is rectifying (rectification ratio=226), not bulk-limited, and the SCLC thickness parameter is unphysical. Poole-Frenkel emission should be avoided as it gave negative R² and unreasonable β_PF, suggesting bulk trap emission is not the primary mechanism. The high ideality factor combined with strong rectification points toward interface recombination models: try a **two-diode model** (Schottky + recombination diode in parallel) or **recombination-generation current** in the depletion region with ideality n≈2-4, which can explain the observed n=3.23. Also consider **thermionic-field emission** or **field emission** mechanisms that account for tunneling through a Schottky barrier at moderate doping levels, as these can produce effective ideality factors exceeding 2 while maintaining rectification.
+The ZnO/Au system shows severely elevated ideality factor (n=3.23 measured, 5.45 from fits) indicating strong recombination or interface states dominate transport, so avoid pure Schottky and Poole-Frenkel models which assume bulk-limited or simple barrier mechanisms. The SCLC model's poor fit (R²=-0.28) with unreasonable dielectric constant suggests space-charge effects are not the primary mechanism. The high sheet resistance (9.9 kΩ·cm²) combined with reasonable barrier height fits (~0.67-0.71 eV) but unreasonable Richardson constants point to interface-dominated transport where current spreading or contact inhomogeneity corrupts the effective emission area. Try equivalent circuits combining: (1) parallel Schottky diode with interface state recombination (Shockley-Read-Hall component), (2) distributed contact resistance models accounting for the high Rsh, or (3) multi-diode models with separate low-voltage (interface state) and high-voltage (barrier) pathways. The large n-factor specifically suggests midgap trap-assisted recombination at the ZnO/Au interface rather than tunneling, so explore recombination-generation current models or two-diode equivalent circuits before returning to TAT mechanisms.
 
 ====================================================================
