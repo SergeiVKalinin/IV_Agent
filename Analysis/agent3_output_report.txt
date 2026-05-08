@@ -1,23 +1,23 @@
 ====================================================================
   AGENT IV — Analysis Report
   Material  : Data as is, Material is ZnO with Au contacts
-  Timestamp : 2026-05-08 20:32 UTC
+  Timestamp : 2026-05-08 20:37 UTC
   Iteration : 1
   T         : 300 K
 ====================================================================
 
-  [REJECTED]  Thermionic_Emission_Schottky
-             R²=-6.004877  R²_log=0.89919  χ²_r=713.354
-  [REJECTED]  Trap_Assisted_Tunneling_TAT
-             R²=-7.981901  R²_log=0.88962  χ²_r=860.2829
-  [REJECTED]  SCLC_Single_Trap_Level
-             R²=-0.116551  R²_log=0.637425  χ²_r=29845.0204
-  [REJECTED]  Poole_Frenkel_Emission
-             R²=-0.865932  R²_log=-1.119213  χ²_r=6041.5662
+  [REJECTED]  Schottky_emission
+             R²=-6.004892  R²_log=0.89919  χ²_r=713.3554
+  [REJECTED]  Schottky_SCLC_hybrid
+             R²=-62.921194  R²_log=0.849076  χ²_r=3283.3919
+  [REJECTED]  SCLC_single_trap
+             R²=-0.116547  R²_log=0.637425  χ²_r=29845.3647
+  [REJECTED]  Poole_Frenkel_emission
+             R²=-0.865932  R²_log=-1.119213  χ²_r=6041.575
 
 
 ORCHESTRATOR FEEDBACK
 --------------------------------------------------
-The ideality factor of 2.05 strongly suggests recombination-dominated transport rather than pure thermionic emission, yet all barrier-based models failed with unreasonable barrier heights (phi_B=0.726 eV, phi_TAT=0.176 eV) indicating these mechanisms are inappropriate for this ZnO-Au system. Avoid Schottky/thermionic emission models and trap-assisted tunneling since the log-scale fits (R²_log ~0.89) capture curvature but yield physically meaningless parameters, particularly the n=3.79 extracted from thermionic fits which far exceeds recombination limits. The SCLC and Poole-Frenkel models showed poor fits (R²_log=0.64 and -1.12 respectively), ruling out bulk-limited conduction mechanisms. Instead, try equivalent circuits combining multiple parallel conduction paths: a recombination current component (exponential with n≈2) plus either a defect-assisted hopping term or grain boundary-limited transport model, since polycrystalline ZnO often exhibits such mixed conduction. The substantial current density at zero bias (J₀=1.14×10⁻⁶ A/cm²) and near-ideal n=2.05 point toward interface recombination centers rather than bulk or injection-limited processes, so focus on interface state recombination models with explicit series resistance.
+The dataset shows moderate ideality factor (n=2.05) and low forward current, suggesting a diode with significant recombination or interface effects, but all barrier-based models have failed. Avoid Schottky emission mechanisms because the high extracted ideality (n=3.79) and poor linear R² indicate the current is not dominated by thermionic emission over a simple barrier. Do not pursue SCLC models since the extracted dielectric constant (εr=5.63) and thickness (d=44.6 μm) are physically unreasonable for a ZnO thin film device, and the voltage scaling doesn't match SCLC behavior. Abandon Poole-Frenkel emission as the near-zero barrier height (0.1 eV) and poor fit quality show bulk trap-assisted conduction is not the dominant mechanism. Instead, try equivalent circuits with back-to-back Schottky diodes or a single diode with parallel shunt resistance, as the N/A rectification and moderate ideality suggest symmetric Au/ZnO/Au contacts or significant leakage pathways. The extracted ideality near 2.0 specifically points to recombination-dominated transport, so consider models incorporating interface state recombination (trap-assisted tunneling or multistep tunneling through interface defects) rather than pure drift or thermionic mechanisms.
 
 ====================================================================
