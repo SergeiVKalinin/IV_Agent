@@ -6,14 +6,18 @@
     "thickness_nm": 200
   },
   "csv_path": "schottky_iv_dummy.csv",
-  "current_iteration": 2,
+  "current_iteration": 3,
   "max_iterations": 3,
   "status": "running",
   "tried_mechanisms": [
     "SCLC_with_Traps",
     "Trap_Assisted_Tunneling_TAT",
     "Thermionic_Emission_Schottky",
-    "Poole_Frenkel_Emission"
+    "Poole_Frenkel_Emission",
+    "Interface_Recombination_Distributed_Traps_Series_R",
+    "SRH_Recombination_Midgap_Series_R",
+    "Recombination_Diode_n2_Series_R",
+    "Two_Diode_Model_Series_R"
   ],
   "verdict_history": [
     {
@@ -60,10 +64,56 @@
       "best_model": "SCLC_with_Traps",
       "best_verdict": "rejected",
       "best_R2_log": 0.942369
+    },
+    {
+      "iteration": 2,
+      "timestamp": "2026-05-08T21:20:12.021480+00:00",
+      "models": [
+        {
+          "name": "Interface_Recombination_Distributed_Traps_Series_R",
+          "verdict": "rejected",
+          "R2": 0.485517,
+          "R2_log": 0.627643,
+          "numerical": "rejected",
+          "physical": "unreasonable",
+          "residual_pat": "high-V systematic"
+        },
+        {
+          "name": "SRH_Recombination_Midgap_Series_R",
+          "verdict": "rejected",
+          "R2": -335.014209,
+          "R2_log": 0.626638,
+          "numerical": "rejected",
+          "physical": "unreasonable",
+          "residual_pat": "high-V systematic"
+        },
+        {
+          "name": "Recombination_Diode_n2_Series_R",
+          "verdict": "rejected",
+          "R2": -10386.110995,
+          "R2_log": -0.451175,
+          "numerical": "rejected",
+          "physical": "unreasonable",
+          "residual_pat": "high-V systematic"
+        },
+        {
+          "name": "Two_Diode_Model_Series_R",
+          "verdict": "rejected",
+          "R2": -7360.853422,
+          "R2_log": -1.699791,
+          "numerical": "rejected",
+          "physical": "unreasonable",
+          "residual_pat": "systematic"
+        }
+      ],
+      "best_model": "Interface_Recombination_Distributed_Traps_Series_R",
+      "best_verdict": "rejected",
+      "best_R2_log": 0.627643
     }
   ],
   "feedback_history": [
-    "Focus exclusively on recombination-dominated mechanisms with n\u22482, not barrier emission or bulk transport. Your primary model must be a Recombination_Diode_with_Series_R: use the standard diode equation J = J0*[exp(qV/(n*kT))-1] with ideality factor n=2 FIXED (not fitted), include series resistance Rs in the voltage drop as V_junction = V_applied - J*Rs*A, and fit only J0_rec and Rs with initial guesses J0\u22481.1e-6 A/cm\u00b2 and Rs\u22480.2 \u03a9\u00b7cm\u00b2. As a secondary option, implement a Two_Diode_Model with parallel n=1 (diffusion) and n=2 (recombination) components plus series resistance: J_total = J01*[exp(q(V-JRs)/(kT))-1] + J02*[exp(q(V-JRs)/(2kT))-1], which is the standard equivalent circuit for real diodes and will capture both interface recombination and any bulk diffusion contribution. Do NOT attempt any more tunneling, SCLC, or pure thermionic models\u2014these are physically wrong for a 200nm Au/ZnO junction showing n=2 behavior. Constrain ZnO parameters to literature values: \u03b5_r=8.5, electron affinity \u03c7=4.2eV, work function difference gives built-in potential Vbi\u22480.7V for Au/ZnO. Report fitted J0_rec, Rs, and calculate interface recombination velocity from J0_rec = q*ni*Sr where Sr is the recombination velocity to validate against typical Au/ZnO interface quality (Sr ~ 10\u00b3-10\u2075 cm/s).\n\nDO NOT propose any of these already-tried mechanisms: .\nCircuit guidance: Include series resistance Rs in the equivalent circuit (init guess \u22480.2 \u03a9\u00b7cm\u00b2). Add a parallel recombination_diode_n2 path."
+    "Focus exclusively on recombination-dominated mechanisms with n\u22482, not barrier emission or bulk transport. Your primary model must be a Recombination_Diode_with_Series_R: use the standard diode equation J = J0*[exp(qV/(n*kT))-1] with ideality factor n=2 FIXED (not fitted), include series resistance Rs in the voltage drop as V_junction = V_applied - J*Rs*A, and fit only J0_rec and Rs with initial guesses J0\u22481.1e-6 A/cm\u00b2 and Rs\u22480.2 \u03a9\u00b7cm\u00b2. As a secondary option, implement a Two_Diode_Model with parallel n=1 (diffusion) and n=2 (recombination) components plus series resistance: J_total = J01*[exp(q(V-JRs)/(kT))-1] + J02*[exp(q(V-JRs)/(2kT))-1], which is the standard equivalent circuit for real diodes and will capture both interface recombination and any bulk diffusion contribution. Do NOT attempt any more tunneling, SCLC, or pure thermionic models\u2014these are physically wrong for a 200nm Au/ZnO junction showing n=2 behavior. Constrain ZnO parameters to literature values: \u03b5_r=8.5, electron affinity \u03c7=4.2eV, work function difference gives built-in potential Vbi\u22480.7V for Au/ZnO. Report fitted J0_rec, Rs, and calculate interface recombination velocity from J0_rec = q*ni*Sr where Sr is the recombination velocity to validate against typical Au/ZnO interface quality (Sr ~ 10\u00b3-10\u2075 cm/s).\n\nDO NOT propose any of these already-tried mechanisms: .\nCircuit guidance: Include series resistance Rs in the equivalent circuit (init guess \u22480.2 \u03a9\u00b7cm\u00b2). Add a parallel recombination_diode_n2 path.",
+    "The catastrophic failure of all diode models (R\u00b2<0) demonstrates this Au/ZnO device does not follow exponential Schottky or recombination behavior\u2014you must test an Ohmic_Leakage_Plus_Series_R model first with J=V/R_total as a baseline to confirm any nonlinearity exists beyond simple resistive transport. If Ohmic leakage accounts for >80% of current, add it as a parallel shunt path (Rsh\u22488800 \u03a9\u00b7cm\u00b2 from J(V=0)=1.14e-6 A/cm\u00b2) then layer a nonlinear mechanism on top. For nonlinear physics, prioritize Schottky_Emission_Barrier_Lowering_Series_R which includes image-force lowering J=A*T\u00b2exp[-q(\u03a6_B-\u03b2\u221aV)/kT] with Rs=1.0 \u03a9\u00b7cm\u00b2 in series\u2014this differs from previous Poole-Frenkel by operating at the metal interface rather than bulk traps. If that fails, test Multistep_Tunneling_Through_Interface_States using J=C*V^m*exp(-E_t/V) to capture trap-assisted tunneling unique to defective interfaces, with m=1-3 as a free parameter. The consistent Area fitting errors indicate you must constrain Area=0.01 cm\u00b2 as a fixed parameter in all fits\u2014the optimizer is incorrectly treating geometry as adjustable. All models must include the identified Rs\u22481.0 \u03a9\u00b7cm\u00b2 in series with the transport mechanism, and promising fits should add parallel Rsh to capture the large J(V=0) leakage current that dominates low bias. Avoid any exponential diode terms (n=1 or n=2) as these have universally failed; focus on power-law, tunneling, or field-dependent emission mechanisms appropriate for degraded metal-semiconductor interfaces with high defect densities.\n\nDO NOT propose any of these already-tried mechanisms: \"SCLC_with_Traps\", \"Trap_Assisted_Tunneling_TAT\", \"Thermionic_Emission_Schottky\", \"Poole_Frenkel_Emission\".\nCircuit guidance: Include series resistance Rs in the equivalent circuit (init guess \u22481.0 \u03a9\u00b7cm\u00b2). Include shunt resistance Rsh in parallel (init guess \u22488800.0 \u03a9\u00b7cm\u00b2). Add a parallel ohmic_leakage path."
   ],
   "diagnosis_history": [
     {
@@ -75,22 +125,32 @@
       "evidence": [
         "Residuals grow 39.2\u00d7 at high V \u2192 Rs\u22480.2 \u03a9\u00b7cm\u00b2."
       ]
+    },
+    {
+      "needs_series_resistance": true,
+      "Rs_estimate_ohm_cm2": 0.9884924359940818,
+      "needs_shunt_resistance": false,
+      "Rsh_estimate_ohm_cm2": null,
+      "needs_parallel_mechanism": true,
+      "evidence": [
+        "Residuals grow 49.0\u00d7 at high V \u2192 Rs\u22481.0 \u03a9\u00b7cm\u00b2.",
+        "Systematic residuals in 'Two_Diode_Model_Series_R' \u2192 missing parallel path."
+      ]
     }
   ],
   "best_result": {
-    "iteration": 1,
-    "model": "SCLC_with_Traps",
+    "iteration": 2,
+    "model": "Interface_Recombination_Distributed_Traps_Series_R",
     "verdict": "rejected",
-    "R2": 0.858861,
-    "R2_log": 0.942369,
+    "R2": 0.485517,
+    "R2_log": 0.627643,
     "fit_params": {
-      "mu_eff": 2.052896965056001,
-      "eps_r": 5.000567578123973,
-      "V_TFL": 1.7835465942496527,
-      "l_trap": 2.9999999999681526,
-      "d_nm": 3281.671246912557
+      "J00": 2.694933976948985e-08,
+      "alpha": 0.4117757502561134,
+      "Rs": 4.9766158868441455,
+      "Area": 0.3347141188811029
     }
   },
   "created_at": "2026-05-08T21:13:38.950968+00:00",
-  "updated_at": "2026-05-08T21:16:35.936910+00:00"
+  "updated_at": "2026-05-08T21:20:12.021555+00:00"
 }
