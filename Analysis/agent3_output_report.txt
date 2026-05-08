@@ -1,23 +1,23 @@
 ====================================================================
   AGENT IV — Analysis Report
   Material  : Data as is, Material is ZnO with Au contacts
-  Timestamp : 2026-05-08 20:21 UTC
-  Iteration : 1
+  Timestamp : 2026-05-08 20:24 UTC
+  Iteration : 2
   T         : 300 K
 ====================================================================
 
-  [REJECTED]  Schottky_Plus_Series_Resistance
-             R²=0.986388  R²_log=0.996057  χ²_r=13.0536
-  [REJECTED]  Schottky_Emission
-             R²=-97.806996  R²_log=0.845447  χ²_r=4977.4641
-  [REJECTED]  Poole_Frenkel
-             R²=-0.878682  R²_log=-5.669454  χ²_r=377.2013
-  [REJECTED]  SCLC_Single_Trap_Level
-             R²=-429823.211325  R²_log=-6.209731  χ²_r=139474792901.9147
+  [REJECTED]  Thermionic_Field_Emission_TFE
+             R²=None  R²_log=None  χ²_r=None
+  [REJECTED]  Schottky_Emission_With_Image_Force_And_Series_R
+             R²=None  R²_log=None  χ²_r=None
+  [REJECTED]  Space_Charge_Limited_Current_With_Exponential_Traps
+             R²=None  R²_log=None  χ²_r=None
+  [REJECTED]  Dual_Diode_TE_Plus_Interface_Recombination
+             R²=-101373.194971  R²_log=-1.615074  χ²_r=96021964.9425
 
 
 ORCHESTRATOR FEEDBACK
 --------------------------------------------------
-The Schottky model with series resistance shows the best fit (R²=0.986) and nearly physical parameters, indicating the ZnO/Au interface behaves primarily as a Schottky barrier, but the high ideality factor (n≈2.05) suggests significant recombination current that pure thermionic emission cannot capture. Avoid Poole-Frenkel and SCLC models entirely—both yield catastrophically poor fits and unphysical parameters because the data clearly exhibits exponential diode behavior rather than bulk-limited conduction. The measured ideality factor between 2.0-2.05 across models is a critical constraint pointing to interface recombination or multi-step tunneling mechanisms that dominate over simple thermionic emission. Try an equivalent circuit combining Schottky emission in parallel with a recombination current path (modeled as a second diode with n=2 fixed, representing interface states), or explore thermionic field emission models that account for barrier lowering and tunneling at moderate doping levels typical of ZnO films. The finite current density at zero bias (J₀≈1.1 μA/cm²) and the consistent n≈2 signature across attempts strongly suggest trap-assisted processes at the metal-semiconductor interface rather than bulk transport, so focus on interface-state-mediated mechanisms with explicit recombination terms.
+The Au/ZnO contact shows an ideality factor of 2.05 and significant current at zero bias (1.14 µA/cm²), indicating substantial interface recombination or tunneling contributions that cannot be captured by pure thermionic emission or space-charge models. Avoid single-mechanism models like pure Schottky emission, thermionic field emission, or SCLC with traps, as the near-ideal n≈2 specifically points to recombination in the depletion region rather than trap-dominated transport or field emission. The dual diode model failed catastrophically (R²=-101373), suggesting the data may exhibit non-monotonic features, shunt leakage, or measurement artifacts that violate basic diode assumptions. Try instead an equivalent circuit combining parallel Schottky emission with a shunt resistance path to capture the zero-bias leakage, or consider a Schottky diode with interface states/recombination velocity as a physically distinct mechanism from bulk thermionic emission. The high zero-bias current and n≈2 strongly constrain the search toward models explicitly incorporating interface recombination (via surface states or interface defects) or parallel conduction paths rather than bulk-limited transport mechanisms.
 
 ====================================================================
