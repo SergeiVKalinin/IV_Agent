@@ -1,7 +1,7 @@
 {
   "meta": {
     "agent": "agent3_judge",
-    "timestamp": "2026-05-08T18:22:11.468383Z",
+    "timestamp": "2026-05-08T18:29:40.829133Z",
     "iteration": 1,
     "material_prompt": "Data as is, Material is ZnO with Au contacts",
     "geometry": {
@@ -30,8 +30,8 @@
     {
       "mechanism_name": "Schottky emission",
       "dominant_regime": "forward",
-      "equation_latex": "J = A^* T^2 \\exp\\left(-\\frac{q\\phi_B}{kT}\\right) \\left[\\exp\\left(\\frac{qV}{nkT}\\right) - 1\\right]",
-      "literature_ref": "Sze & Ng, 2007, Physics of Semiconductor Devices",
+      "equation_latex": "J = A^* T^2 \\exp\\left(-\\frac{q\\phi_B}{k_B T}\\right) \\left[\\exp\\left(\\frac{qV}{n k_B T}\\right) - 1\\right]",
+      "literature_ref": "Sze and Ng, 2007, Physics of Semiconductor Devices",
       "priority_agent1": 1,
       "R2": 0.810123,
       "R2_log": 0.938553,
@@ -58,27 +58,27 @@
       ],
       "residual_pattern": "high-V systematic",
       "physical_verdict": "unreasonable",
-      "physical_reasoning": "The ideality factor n = 5.45 is fatally high for Schottky emission, exceeding the physically plausible range (1-2.5) by more than a factor of two. This, combined with astronomically large parameter uncertainties (10\u2079-10\u00b9\u00b9 times the fitted values), indicates the Schottky emission model does not describe the dominant transport mechanism in this Au/ZnO device. While \u03c6_B and A* values are nominally in acceptable ranges, they are artifacts of forcing an inappropriate model onto the data.",
+      "physical_reasoning": "While A* and \u03c6_B individually fall within physically plausible ranges for Au/ZnO, the ideality factor of 5.45 is fatally incompatible with Schottky emission physics. The enormous parameter uncertainties (10\u00b9\u2070-10\u00b9\u00b3 times the fitted values) indicate the fitting failed to converge, which combined with the high ideality factor proves this mechanism does not describe the transport in this device. The modest R\u00b2=0.81 and high \u03c7\u00b2_red=113 further confirm poor model suitability.",
       "parameter_checks": [
         {
           "param_name": "A_star",
           "fitted_value": 114.91,
           "fitted_error": 62800000000000.0,
-          "units": "A/(cm\u00b2\u00b7K\u00b2)",
-          "expected_range": "[30, 120] A/(cm\u00b2\u00b7K\u00b2)",
+          "units": "A/(cm^2*K^2)",
+          "expected_range": "[20, 120] A/(cm^2*K^2)",
           "value_assessment": "reasonable",
-          "reasoning": "For ZnO, the theoretical Richardson constant A** \u2248 32 A/(cm\u00b2\u00b7K\u00b2) based on effective mass. The fitted value of ~115 A/(cm\u00b2\u00b7K\u00b2) is elevated but within the commonly observed range (30-120) for polycrystalline ZnO with Au contacts, where surface inhomogeneities and interface states typically increase the effective A*. However, the enormous uncertainty (\u00b16.28\u00d710\u00b9\u00b3) indicates the fit is poorly constrained.",
-          "severity": "moderate"
+          "reasoning": "For ZnO, the effective Richardson constant A* typically ranges from 30-120 A/(cm\u00b2K\u00b2) depending on electron affinity and effective mass. The fitted value of ~115 is at the upper end but within known literature values for n-type ZnO with metal contacts.",
+          "severity": "ok"
         },
         {
           "param_name": "phi_B",
           "fitted_value": 0.71255,
           "fitted_error": 14200000000.0,
           "units": "eV",
-          "expected_range": "[0.6, 0.9] eV",
+          "expected_range": "[0.6, 1.1] eV",
           "value_assessment": "reasonable",
-          "reasoning": "The Au/ZnO Schottky barrier height is typically reported between 0.6-0.9 eV depending on surface preparation, work function differences (Au: 5.1 eV, ZnO electron affinity: 4.35 eV), and interface states. The fitted value of 0.71 eV falls squarely within this range. However, the uncertainty of \u00b11.42\u00d710\u00b9\u2070 eV is astronomically large and physically meaningless, indicating severe fitting instability.",
-          "severity": "moderate"
+          "reasoning": "Au/ZnO Schottky barriers typically range 0.6-1.1 eV depending on surface preparation and interface states. The fitted value of 0.71 eV is consistent with reported values for Au contacts on ZnO, which commonly fall between 0.65-0.85 eV.",
+          "severity": "ok"
         },
         {
           "param_name": "n",
@@ -87,159 +87,147 @@
           "units": "dimensionless",
           "expected_range": "[1.0, 2.5] dimensionless",
           "value_assessment": "unreasonable",
-          "reasoning": "The ideality factor n represents deviations from ideal Schottky behavior due to recombination, tunneling, and series resistance. For metal-semiconductor contacts, n typically ranges from 1.0 (ideal) to 2.5 (recombination-dominated). The fitted value of 5.45 greatly exceeds this range, suggesting the Schottky emission model fundamentally fails to capture the transport physics\u2014likely indicating alternative mechanisms like space-charge-limited current, Poole-Frenkel emission, or trap-assisted tunneling dominate.",
+          "reasoning": "The ideality factor of 5.45 is far too high for Schottky emission. Ideal Schottky diodes have n\u22481, while practical devices with interface states, series resistance, or generation-recombination may reach n=1.5-2.5. Values above 3 indicate the Schottky model is inappropriate and other mechanisms (space-charge limited, hopping, Poole-Frenkel) dominate.",
           "severity": "fatal"
         }
       ],
       "consistency_checks": [
         {
-          "check_name": "J0_consistency",
+          "check_name": "Richardson_J0_consistency",
           "passed": false,
-          "reasoning": "For Schottky emission, J\u2080 = A*\u00b7T\u00b2\u00b7exp(-q\u03c6_B/kT). With A* = 115 A/(cm\u00b2\u00b7K\u00b2), T = 300 K, and \u03c6_B = 0.71 eV, we expect J\u2080 \u2248 1.15\u00d710\u207b\u2077 A/cm\u00b2. However, the extremely high ideality factor n = 5.45 implies the extracted \u03c6_B is artificially lowered to compensate for non-Schottky transport, breaking the fundamental Schottky relation. The model is internally inconsistent."
+          "reasoning": "At 300K with \u03c6_B=0.71 eV and A*=115, the expected saturation current density J0 = A*T\u00b2exp(-\u03c6_B/kT) \u2248 1.2\u00d710\u207b\u2075 A/cm\u00b2. However, the large ideality factor n=5.45 suggests the actual fitted J0 is orders of magnitude different, indicating internal inconsistency in the model application."
         },
         {
-          "check_name": "uncertainty_magnitude",
+          "check_name": "ideality_factor_physical_limit",
           "passed": false,
-          "reasoning": "The fitted uncertainties for A* (\u00b16.28\u00d710\u00b9\u00b3) and \u03c6_B (\u00b11.42\u00d710\u00b9\u2070) are 10\u2079-10\u00b9\u00b9 orders of magnitude larger than the fitted values themselves. These absurdly large errors indicate numerical instability, ill-conditioned covariance matrix, or parameter non-identifiability\u2014the fit has not converged to a physically meaningful solution despite reasonable \u03c7\u00b2_red."
+          "reasoning": "An ideality factor of 5.45 violates the fundamental physical limit for Schottky emission. This value suggests that ~82% of the applied voltage is lost to non-ideal processes, which is incompatible with the Schottky emission mechanism where n should be close to unity."
         },
         {
-          "check_name": "R2_vs_physical_model",
+          "check_name": "error_magnitude_assessment",
           "passed": false,
-          "reasoning": "While R\u00b2_log = 0.94 appears good, the combination of n = 5.45 (far exceeding physical bounds) and catastrophic parameter uncertainties reveals the model is mathematically fitting noise rather than capturing the true transport mechanism. The Schottky equation is forcing a fit where it doesn't apply."
+          "reasoning": "The uncertainties on A* (\u00b16.28\u00d710\u00b9\u00b3) and \u03c6_B (\u00b11.42\u00d710\u00b9\u2070) are astronomically large, exceeding the fitted values by 11-12 orders of magnitude. This indicates complete failure of the fitting algorithm to converge, suggesting fundamental model inappropriateness for this data."
         }
       ],
-      "suggested_next_if_bad": "Try Poole-Frenkel emission (field-enhanced trap emission in the ZnO bulk), space-charge-limited current models (if ZnO has significant trap density), or Fowler-Nordheim tunneling (if high fields enable direct tunneling). Also check for series resistance effects that can artificially inflate the ideality factor\u2014extract series resistance via Cheung method or voltage-dependent analysis before refitting.",
+      "suggested_next_if_bad": "Try space-charge limited current (SCLC) models (Mott-Gurney or trap-filled SCLC), Poole-Frenkel emission for bulk-limited transport, or hopping conduction mechanisms. The high ideality factor suggests defect-mediated transport rather than interface-limited Schottky emission. Also verify ohmic vs rectifying behavior and consider series resistance effects.",
       "final_verdict": "rejected",
       "verdict_rank": 1
     },
     {
       "mechanism_name": "Space-charge-limited current with traps",
       "dominant_regime": "forward",
-      "equation_latex": "J = \\frac{9}{8} \\epsilon_r \\epsilon_0 \\mu \\theta \\frac{V^2}{d^3}, \\quad \\theta = \\left(\\frac{V}{V_{TFL}}\\right)^{m-1}",
-      "literature_ref": "Lampert & Mark, 1970, Current Injection in Solids",
-      "priority_agent1": 2,
-      "R2": -11.289367,
-      "R2_log": 0.362496,
-      "chi2_reduced": 1044.2367,
-      "residuals_rms": 0.009527697285175774,
+      "equation_latex": "J = \\frac{9}{8} \\epsilon \\mu \\theta \\frac{V^2}{d^3}, \\quad \\theta = \\left(\\frac{V}{V_{TFL}}\\right)^{l-1}",
+      "literature_ref": "Lampert and Mark, 1970, Current Injection in Solids",
+      "priority_agent1": 3,
+      "R2": 0.805207,
+      "R2_log": 0.353071,
+      "chi2_reduced": 194.5976,
+      "residuals_rms": 0.001199526426115731,
       "fit_params": {
-        "eps_r": 5.000000000000001,
-        "mu": 0.01,
-        "V_TFL": 1.9999999999999998,
-        "m": 3.711419509889986,
-        "d": 2.4999999999999998e-05
+        "eps_mu": 1.0000002442688272e-13,
+        "V_TFL": 4.999809032797608,
+        "l": 3.5328304795186813,
+        "d": 4.999999999938316e-05
       },
       "param_errors": {
-        "eps_r": 595.259193090167,
-        "mu": 5.236306022490863e-09,
-        "V_TFL": 115.6443406660804,
-        "m": 0.14390599887591707,
-        "d": 0.002404239752928339
+        "eps_mu": NaN,
+        "V_TFL": NaN,
+        "l": NaN,
+        "d": NaN
       },
       "numerical_quality_score": 0,
       "numerical_verdict": "rejected",
       "numerical_flags": [
-        "R\u00b2=-11.289 very low",
-        "R\u00b2_log=0.362 very low (poor log-scale fit)",
-        "\u03c7\u00b2_red=1044.2 >> 1  (very poor fit)",
+        "R\u00b2=0.805 very low",
+        "R\u00b2_log=0.353 very low (poor log-scale fit)",
+        "\u03c7\u00b2_red=194.6 >> 1  (very poor fit)",
         "systematic residual structure detected (too few sign runs)",
-        "residuals grow at high V \u2014 possible missing Rs term",
-        "RMS residual = 68.4% of J_max"
+        "residuals grow at high V \u2014 possible missing Rs term"
       ],
       "residual_pattern": "high-V systematic",
       "physical_verdict": "unreasonable",
-      "physical_reasoning": "The SCLC model is physically inappropriate for the ZnO-Au system, which forms Schottky barriers. Critical parameters (\u03b5_r, \u03bc) are grossly unphysical with enormous uncertainties, indicating the fit is unconstrained. The catastrophic fit quality (R\u00b2 = -11.3, \u03c7\u00b2_red = 1044) confirms the model cannot describe the data. Only the trap parameter m appears reasonable, but this is insufficient to validate the model.",
+      "physical_reasoning": "Two fatal issues invalidate this model: (1) the fitted thickness is 2.5\u00d7 the actual device thickness, indicating fundamental model failure, and (2) l=3.5 is physically implausible for ZnO trap distributions. The extremely poor fit quality (R\u00b2_log=0.35, \u03c7\u00b2_red=195) confirms the SCLC model does not describe the conduction mechanism. The data likely exhibits mixed conduction (Schottky emission at low V, possibly other mechanisms at high V).",
       "parameter_checks": [
         {
-          "param_name": "eps_r",
-          "fitted_value": 5.0,
-          "fitted_error": 595.0,
-          "units": "dimensionless",
-          "expected_range": "[8, 10] for ZnO",
-          "value_assessment": "unreasonable",
-          "reasoning": "ZnO has a well-established relative permittivity of ~8-10. The fitted value of 5 is significantly below this range, and the enormous uncertainty (\u00b1595) indicates the fit is completely unconstrained.",
-          "severity": "fatal"
-        },
-        {
-          "param_name": "mu",
-          "fitted_value": 0.01,
-          "fitted_error": 5.24e-09,
-          "units": "cm\u00b2/(V\u00b7s)",
-          "expected_range": "[1, 200] cm\u00b2/(V\u00b7s) for ZnO thin films",
-          "value_assessment": "unreasonable",
-          "reasoning": "ZnO typically exhibits electron mobility of 1-200 cm\u00b2/(V\u00b7s) depending on quality and defects. The fitted value of 0.01 cm\u00b2/(V\u00b7s) is 2-4 orders of magnitude too low, even for highly defective films.",
-          "severity": "fatal"
+          "param_name": "eps_mu",
+          "fitted_value": 1e-13,
+          "fitted_error": null,
+          "units": "F*cm/V*s",
+          "expected_range": "[1e-13, 1e-10] F*cm/V*s",
+          "value_assessment": "borderline",
+          "reasoning": "For ZnO with \u03b5_r\u22488-10 (\u03b5\u22487-9\u00d710\u207b\u00b9\u00b3 F/cm) and typical \u03bc\u22481-100 cm\u00b2/V\u00b7s, \u03b5\u00b7\u03bc should be ~10\u207b\u00b9\u00b3-10\u207b\u00b9\u2070 F\u00b7cm/V\u00b7s. The fitted value is at the extreme lower bound, suggesting either very low mobility (~1 cm\u00b2/V\u00b7s) or underestimated permittivity.",
+          "severity": "moderate"
         },
         {
           "param_name": "V_TFL",
-          "fitted_value": 2.0,
-          "fitted_error": 116.0,
+          "fitted_value": 4.9998,
+          "fitted_error": null,
           "units": "V",
-          "expected_range": "[0.1, 10] V for 200 nm ZnO",
-          "value_assessment": "borderline",
-          "reasoning": "The trap-filled limit voltage of 2 V is plausible for a 200 nm device, but the massive uncertainty (\u00b1116 V) indicates this parameter is not well-determined by the data.",
-          "severity": "moderate"
-        },
-        {
-          "param_name": "m",
-          "fitted_value": 3.7114,
-          "fitted_error": 0.144,
-          "units": "dimensionless",
-          "expected_range": "[2, 6] typical for exponential trap distributions",
+          "expected_range": "[1, 50] V",
           "value_assessment": "reasonable",
-          "reasoning": "The trap distribution parameter m = 3.7 is within expected range for exponential trap distributions in semiconductors. This is the only parameter with reasonable value and uncertainty.",
+          "reasoning": "Trap-filled limit voltage V_TFL = e\u00b7N_t\u00b7d\u00b2/(2\u03b5) depends on trap density. For d=200 nm and typical ZnO trap densities (10\u00b9\u2076-10\u00b9\u2078 cm\u207b\u00b3), V_TFL of ~5V is plausible for moderate trap concentrations around 10\u00b9\u2077 cm\u207b\u00b3.",
           "severity": "ok"
         },
         {
+          "param_name": "l",
+          "fitted_value": 3.5328,
+          "fitted_error": null,
+          "units": "dimensionless",
+          "expected_range": "[1, 2] dimensionless",
+          "value_assessment": "unreasonable",
+          "reasoning": "The trap distribution parameter l represents the energy distribution of traps, where l>2 implies deeper/broader trap distributions. Values of l=3.5 are rarely observed in metal oxides and suggest either an incorrect model, inappropriate voltage range, or non-SCLC conduction mechanism dominating.",
+          "severity": "fatal"
+        },
+        {
           "param_name": "d",
-          "fitted_value": 2.5e-05,
-          "fitted_error": 0.0024,
+          "fitted_value": 5e-05,
+          "fitted_value_cm": 500,
+          "fitted_error": null,
           "units": "cm",
-          "expected_range": "[2e-05] cm (fixed at 200 nm)",
-          "value_assessment": "borderline",
-          "reasoning": "The fitted thickness of 250 nm vs. stated 200 nm shows 25% deviation. The large relative uncertainty (\u00b196%) suggests the model is trying to compensate for poor fit by adjusting what should be a fixed geometric parameter.",
-          "severity": "moderate"
+          "expected_range": "2.0e-05 cm (fixed)",
+          "value_assessment": "unreasonable",
+          "reasoning": "The fitted thickness (500 nm = 5\u00d710\u207b\u2075 cm) is 2.5\u00d7 larger than the stated device thickness of 200 nm (2\u00d710\u207b\u2075 cm). This severe discrepancy indicates the SCLC model is not correctly describing the data, as thickness is a geometric constraint that should not be a free parameter.",
+          "severity": "fatal"
         }
       ],
       "consistency_checks": [
         {
-          "check_name": "SCLC internal consistency",
+          "check_name": "V_TFL_trap_density_calculation",
           "passed": false,
-          "reasoning": "For SCLC, the current should scale as J \u221d \u03b5\u03bcV\u00b2/d\u00b3. With the fitted low \u03b5_r and extremely low \u03bc, the predicted currents would be orders of magnitude below typical ZnO behavior, yet the fit quality (R\u00b2 = -11.3) indicates the model fails catastrophically to describe the data."
+          "reasoning": "Using V_TFL = e\u00b7N_t\u00b7d\u00b2/(2\u03b5) with fitted d=500nm instead of actual 200nm gives inconsistent trap density. With actual d=200nm and V_TFL=5V, N_t\u22485\u00d710\u00b9\u2077 cm\u207b\u00b3 is reasonable, but the model fitting the wrong thickness undermines this."
         },
         {
-          "check_name": "Fit quality vs parameter uncertainty",
+          "check_name": "SCLC_voltage_scaling",
           "passed": false,
-          "reasoning": "Multiple parameters show uncertainties comparable to or exceeding their values (eps_r: \u00b1595, V_TFL: \u00b1116, d: \u00b196%). Combined with R\u00b2 = -11.3 and \u03c7\u00b2_red = 1044, this indicates complete model failure and parameter non-identifiability."
+          "reasoning": "The exponent in \u03b8 \u221d V^(l-1) gives overall J \u221d V^(l+1) = V^4.5 in trap-filled SCLC regime. Such steep voltage dependence is unusually high and suggests the model may be overfitting or that multiple conduction mechanisms are present."
         },
         {
-          "check_name": "ZnO-Au contact physics",
+          "check_name": "fit_quality_indicators",
           "passed": false,
-          "reasoning": "Au forms Schottky contacts with ZnO (barrier ~0.6-0.8 eV). SCLC typically dominates in insulating or high-resistance materials with ohmic contacts. The ZnO-Au system should show Schottky or thermionic emission behavior, not bulk-limited SCLC."
+          "reasoning": "R\u00b2_log = 0.35 is very poor, indicating the model fails to capture current variations across voltage range. Combined with \u03c7\u00b2_red = 195 (>>1), the fit is statistically unacceptable even before considering physical parameters."
         }
       ],
-      "suggested_next_if_bad": "Try Schottky emission (thermionic emission or thermionic field emission) models appropriate for metal-semiconductor contacts. Alternatively, investigate Poole-Frenkel emission if trap-assisted transport dominates. Check if the IV curve shows rectifying behavior characteristic of Schottky barriers.",
+      "suggested_next_if_bad": "Try Schottky emission (thermionic or thermionic-field emission) given Au/ZnO forms a rectifying contact. Also consider Poole-Frenkel emission or Fowler-Nordheim tunneling. Examine ln(J) vs V and ln(J) vs V^0.5 plots to identify correct mechanism. The thickness discrepancy suggests SCLC is fundamentally inappropriate for this metal-semiconductor junction.",
       "final_verdict": "rejected",
       "verdict_rank": 1
     },
     {
       "mechanism_name": "Poole-Frenkel emission",
-      "dominant_regime": "both",
-      "equation_latex": "J = J_0 E \\exp\\left(-\\frac{q(\\phi_T - \\beta_{PF}\\sqrt{E})}{kT}\\right), \\quad \\beta_{PF} = \\sqrt{\\frac{q^3}{\\pi\\epsilon_r\\epsilon_0}}",
-      "literature_ref": "Frenkel, 1938, Phys. Rev.; Hill, 1971, J. Appl. Phys.",
-      "priority_agent1": 3,
+      "dominant_regime": "high-field",
+      "equation_latex": "J = q\\mu N_c E \\exp\\left(-\\frac{q(\\phi_t - \\beta_{PF}\\sqrt{E})}{k_B T}\\right)",
+      "literature_ref": "Frenkel, 1938, Physical Review",
+      "priority_agent1": 4,
       "R2": -0.393712,
       "R2_log": null,
       "chi2_reduced": 399.1095,
       "residuals_rms": 0.0032085571306011166,
       "fit_params": {
-        "J0": 1.0000000000001661e-08,
-        "phi_T": 0.5,
-        "beta_PF": 3.5e-05
+        "q_mu_Nc": 1.0000000000001662e-06,
+        "phi_t": 0.5,
+        "beta_PF": 2.0000000000000005e-05
       },
       "param_errors": {
-        "J0": NaN,
-        "phi_T": NaN,
+        "q_mu_Nc": NaN,
+        "phi_t": NaN,
         "beta_PF": NaN
       },
       "numerical_quality_score": 0,
@@ -253,130 +241,130 @@
       ],
       "residual_pattern": "high-V systematic",
       "physical_verdict": "unreasonable",
-      "physical_reasoning": "While individual parameter values are within or near acceptable physical ranges for ZnO, the catastrophically poor fit quality (R\u00b2 = -0.39, \u03c7\u00b2_red = 399) indicates Poole-Frenkel emission is not the operative conduction mechanism. The slightly elevated \u03b2_PF suggests possible dielectric complications, but more critically, the model fundamentally fails to describe the data. Parameter reasonableness is moot when the model is clearly incorrect.",
+      "physical_reasoning": "The fitted Poole-Frenkel coefficient is an order of magnitude too small for ZnO's dielectric constant, which is fatal to the model validity. Combined with catastrophic fit quality (R\u00b2 = -0.39, \u03c7\u00b2_red = 399), the data clearly does not follow Poole-Frenkel emission. The negative R\u00b2 indicates the model is fundamentally inappropriate for this IV characteristic.",
       "parameter_checks": [
         {
-          "param_name": "J0",
-          "fitted_value": 1e-08,
+          "param_name": "q_mu_Nc",
+          "fitted_value": 1e-06,
           "fitted_error": null,
-          "units": "A/(cm\u00b2\u00b7MV/cm)",
-          "expected_range": "[1e-12, 1e-6] A/(cm\u00b2\u00b7MV/cm)",
-          "value_assessment": "reasonable",
-          "reasoning": "For Poole-Frenkel emission in ZnO, J0 typically ranges from 1e-12 to 1e-6 A/(cm\u00b2\u00b7MV/cm) depending on trap density and mobility. The fitted value of 1e-8 falls within this plausible range.",
-          "severity": "ok"
+          "units": "A/V",
+          "expected_range": "[1e-10, 1e-4] A/V",
+          "value_assessment": "borderline",
+          "reasoning": "For ZnO with Nc~2.9e18 cm\u207b\u00b3, \u03bc~100-200 cm\u00b2/Vs, the prefactor q\u00b7\u03bc\u00b7Nc should be ~4.6e-5 to 9.2e-5 A/V. The fitted value of 1e-6 A/V is about 2 orders of magnitude too low, suggesting either lower trap density or reduced mobility in the traps.",
+          "severity": "moderate"
         },
         {
-          "param_name": "phi_T",
+          "param_name": "phi_t",
           "fitted_value": 0.5,
           "fitted_error": null,
           "units": "eV",
-          "expected_range": "[0.3, 1.2] eV",
+          "expected_range": "[0.1, 1.5] eV",
           "value_assessment": "reasonable",
-          "reasoning": "Trap depths in ZnO typically range from 0.3 to 1.2 eV, with common oxygen vacancy and zinc interstitial traps around 0.4-0.8 eV. A value of 0.5 eV is consistent with shallow-to-medium trap states in ZnO.",
+          "reasoning": "Trap depths in ZnO typically range from shallow donors (~0.03 eV) to deep traps (oxygen vacancies ~0.5-1.0 eV, zinc interstitials ~0.2-0.5 eV). A value of 0.5 eV is consistent with moderate-depth traps commonly observed in ZnO thin films.",
           "severity": "ok"
         },
         {
           "param_name": "beta_PF",
-          "fitted_value": 3.5e-05,
+          "fitted_value": 2e-05,
           "fitted_error": null,
-          "units": "eV\u00b7cm^0.5/V^0.5",
-          "expected_range": "[2.0e-05, 3.5e-05] eV\u00b7cm^0.5/V^0.5",
-          "value_assessment": "borderline",
-          "reasoning": "For ZnO with \u03b5r \u2248 8-10, the theoretical \u03b2_PF = \u221a(q\u00b3/\u03c0\u03b5_r\u03b5_0) should be 2.0-2.5e-5 eV\u00b7cm^0.5/V^0.5. The fitted value of 3.5e-5 is at the upper boundary, suggesting either overestimation or a lower effective dielectric constant (\u03b5r \u2248 4-5), which could indicate localized trap regions with reduced screening.",
-          "severity": "minor"
-        }
-      ],
-      "consistency_checks": [
-        {
-          "check_name": "beta_PF vs dielectric constant",
-          "passed": false,
-          "reasoning": "The fitted \u03b2_PF of 3.5e-5 implies \u03b5r \u2248 4.7, which is significantly lower than bulk ZnO (\u03b5r \u2248 8-10). This suggests either the fit is extracting an effective lower dielectric constant near trap sites, or the Poole-Frenkel mechanism is not the dominant process. For thin films, interface effects can reduce \u03b5r, but this magnitude is borderline problematic."
-        },
-        {
-          "check_name": "Fit quality indicators",
-          "passed": false,
-          "reasoning": "R\u00b2 = -0.39 and \u03c7\u00b2_red = 399 indicate extremely poor fit quality. A negative R\u00b2 means the model performs worse than a horizontal line through the mean. This strongly suggests Poole-Frenkel is not the correct conduction mechanism for this data, regardless of parameter reasonableness."
-        },
-        {
-          "check_name": "Temperature dependence verification",
-          "passed": null,
-          "reasoning": "At T=300K, Poole-Frenkel should show ln(J/E) vs \u221aE linearity with slope proportional to \u03b2_PF/kT. Without multi-temperature data or residual patterns, cannot verify if temperature dependence is correctly captured, but poor fit quality suggests fundamental model mismatch."
-        }
-      ],
-      "suggested_next_if_bad": "Try alternative mechanisms: (1) Schottky emission if current shows stronger voltage than field dependence, (2) Space-charge-limited current (SCLC) if J \u221d V\u00b2 behavior observed, (3) Fowler-Nordheim tunneling for high fields, or (4) thermionic emission for Au/ZnO Schottky contacts. Examine ln(J) vs V and ln(J) vs V^0.5 plots to identify correct functional form before fitting.",
-      "final_verdict": "rejected",
-      "verdict_rank": 1
-    },
-    {
-      "mechanism_name": "Trap-assisted tunneling",
-      "dominant_regime": "both",
-      "equation_latex": "J = J_{TAT} \\exp\\left(\\frac{qV}{E_{TAT}}\\right) \\sinh\\left(\\frac{qV}{2kT}\\right)",
-      "literature_ref": "Shockley & Read, 1952, Phys. Rev.; Simmons, 1967, J. Appl. Phys.",
-      "priority_agent1": 4,
-      "R2": 0.222842,
-      "R2_log": -6.661231,
-      "chi2_reduced": 369.5063,
-      "residuals_rms": 0.0023959503841507785,
-      "fit_params": {
-        "J_TAT": 4.910166818305975e-11,
-        "E_TAT": 0.9997871623539492
-      },
-      "param_errors": {
-        "J_TAT": 4.982058765738335e-10,
-        "E_TAT": 2.5389393716814777
-      },
-      "numerical_quality_score": 0,
-      "numerical_verdict": "rejected",
-      "numerical_flags": [
-        "R\u00b2=0.223 very low",
-        "R\u00b2_log=-6.661 very low (poor log-scale fit)",
-        "\u03c7\u00b2_red=369.5 >> 1  (very poor fit)",
-        "systematic residual structure detected (too few sign runs)",
-        "residuals grow at high V \u2014 possible missing Rs term"
-      ],
-      "residual_pattern": "high-V systematic",
-      "physical_verdict": "unreasonable",
-      "physical_reasoning": "The fitted E_TAT parameter is physically unreasonable for trap-assisted tunneling in ZnO, being an order of magnitude too large. Combined with catastrophic fit quality (R\u00b2 = 0.22, negative log R\u00b2) and parameter uncertainties exceeding 250%, this model completely fails to describe the transport mechanism. The large E_TAT effectively removes the tunneling character from the equation, making it degenerate.",
-      "parameter_checks": [
-        {
-          "param_name": "J_TAT",
-          "fitted_value": 4.9102e-11,
-          "fitted_error": 4.98e-10,
-          "units": "A/cm\u00b2",
-          "expected_range": "[1e-15, 1e-6] A/cm\u00b2",
-          "value_assessment": "reasonable",
-          "reasoning": "The prefactor for trap-assisted tunneling in ZnO/Au systems typically ranges from 1e-15 to 1e-6 A/cm\u00b2. The fitted value of ~5e-11 A/cm\u00b2 falls well within this range and is consistent with moderate trap density in the oxide.",
-          "severity": "ok"
-        },
-        {
-          "param_name": "E_TAT",
-          "fitted_value": 0.99979,
-          "fitted_error": 2.54,
-          "units": "V",
-          "expected_range": "[0.025, 0.3] V",
+          "units": "eV*cm^(1/2)/V^(1/2)",
+          "expected_range": "[1.0e-4, 3.0e-4] eV*cm^(1/2)/V^(1/2)",
           "value_assessment": "unreasonable",
-          "reasoning": "E_TAT represents a characteristic energy related to the trap energy distribution and tunneling barrier. For ZnO at 300K, this should be comparable to or slightly larger than kT (0.026 eV) up to ~0.3 V for deep traps. A value of ~1 V is excessively large and physically inconsistent with trap-assisted tunneling physics, suggesting the model is failing to capture the actual transport mechanism.",
+          "reasoning": "The theoretical Poole-Frenkel coefficient is \u03b2_PF = \u221a(q\u00b3/(\u03c0\u00b7\u03b5\u2080\u00b7\u03b5\u1d63)). For ZnO with \u03b5\u1d63~8-9, \u03b2_PF should be ~1.5-1.7e-4 eV\u00b7cm^(1/2)/V^(1/2). The fitted value of 2.0e-5 is an order of magnitude too small, indicating the field-dependence does not match Poole-Frenkel physics.",
           "severity": "fatal"
         }
       ],
       "consistency_checks": [
         {
-          "check_name": "Parameter uncertainty vs value",
+          "check_name": "beta_PF_theoretical_match",
           "passed": false,
-          "reasoning": "Both parameters have enormous relative uncertainties: J_TAT has 1000% uncertainty and E_TAT has 254% uncertainty. This indicates the fit is extremely poorly constrained and the parameters are essentially undefined."
+          "reasoning": "The Poole-Frenkel coefficient must satisfy \u03b2_PF = \u221a(q\u00b3/(\u03c0\u00b7\u03b5\u2080\u00b7\u03b5\u1d63)) for the mechanism to be valid. With ZnO \u03b5\u1d63\u22488.5, the theoretical value is ~1.6e-4 eV\u00b7cm^(1/2)/V^(1/2), but the fit gives 2.0e-5, a factor of 8 discrepancy. This strongly suggests the mechanism is not Poole-Frenkel."
         },
         {
-          "check_name": "E_TAT physical magnitude",
+          "check_name": "prefactor_consistency",
           "passed": false,
-          "reasoning": "For trap-assisted tunneling to dominate, E_TAT should be on the order of kT to a few kT (0.026-0.15 V at 300K). A value of 1 V would suppress the exponential term to near unity, making the mechanism effectively non-tunneling."
+          "reasoning": "The prefactor q\u00b7\u03bc\u00b7Nc being 2 orders of magnitude lower than expected from bulk ZnO properties suggests either the model is inappropriate or there is significant trap depletion/low trap occupancy that is not accounted for in the standard Poole-Frenkel formulation."
         },
         {
-          "check_name": "Model equation behavior",
+          "check_name": "fit_quality",
           "passed": false,
-          "reasoning": "With E_TAT \u2248 1 V, the exp(qV/E_TAT) term becomes approximately exp(V), which is unphysical for trap-assisted tunneling. This suggests the model is mathematically fitting but physically meaningless."
+          "reasoning": "R\u00b2 = -0.39 and \u03c7\u00b2_red = 399 indicate extremely poor fit quality. A negative R\u00b2 means the model performs worse than a horizontal line through the data mean, demonstrating fundamental model inadequacy for this dataset."
         }
       ],
-      "suggested_next_if_bad": "Try Schottky emission (thermionic emission over barrier) or Fowler-Nordheim tunneling. The poor fit quality and extreme parameter values suggest trap-assisted tunneling is not the dominant mechanism. For ZnO/Au, Schottky emission is often dominant at moderate fields, while space-charge-limited current (SCLC) may occur at higher voltages if the oxide contains significant trap states.",
+      "suggested_next_if_bad": "Try Schottky emission (thermionic emission) given the Au/ZnO contact, or space-charge-limited current (SCLC) models which are common in thin-film ZnO devices. Also consider Fowler-Nordheim tunneling if measurements extend to very high fields, or ohmic/interface-limited conduction at lower voltages.",
+      "final_verdict": "rejected",
+      "verdict_rank": 1
+    },
+    {
+      "mechanism_name": "Trap-assisted tunneling (TAT)",
+      "dominant_regime": "both",
+      "equation_latex": "J = J_0 \\exp\\left(\\frac{V}{V_0}\\right) \\sinh\\left(\\frac{qV}{2k_B T}\\right)",
+      "literature_ref": "Simmons, 1967, Journal of Applied Physics",
+      "priority_agent1": 2,
+      "R2": 0.234341,
+      "R2_log": -6.068673,
+      "chi2_reduced": 368.4929,
+      "residuals_rms": 0.002378158904170378,
+      "fit_params": {
+        "J0": 8.10646754160378e-11,
+        "V0": 1.9819876625671282
+      },
+      "param_errors": {
+        "J0": 7.779000497477629e-10,
+        "V0": 74.05106952024978
+      },
+      "numerical_quality_score": 0,
+      "numerical_verdict": "rejected",
+      "numerical_flags": [
+        "R\u00b2=0.234 very low",
+        "R\u00b2_log=-6.069 very low (poor log-scale fit)",
+        "\u03c7\u00b2_red=368.5 >> 1  (very poor fit)",
+        "systematic residual structure detected (too few sign runs)",
+        "residuals grow at high V \u2014 possible missing Rs term"
+      ],
+      "residual_pattern": "high-V systematic",
+      "physical_verdict": "unreasonable",
+      "physical_reasoning": "While the J0 central value is physically plausible, both parameters have catastrophically large uncertainties (960% and 3740%), indicating complete parameter indeterminacy. The extremely poor fit quality (R\u00b2=0.23, \u03c7\u00b2_red=368) demonstrates that the TAT model fundamentally does not describe the transport physics in this ZnO/Au device. The fitted parameters are mathematically meaningless.",
+      "parameter_checks": [
+        {
+          "param_name": "J0",
+          "fitted_value": 8.1065e-11,
+          "fitted_error": 7.78e-10,
+          "units": "A/cm\u00b2",
+          "expected_range": "[1e-15, 1e-5] A/cm\u00b2",
+          "value_assessment": "reasonable",
+          "reasoning": "For trap-assisted tunneling in ZnO, J0 represents the characteristic current density and typically ranges from 1e-15 to 1e-5 A/cm\u00b2. The fitted value of ~10^-10 A/cm\u00b2 falls within this range, though the large uncertainty (nearly 10\u00d7 the value) indicates poor parameter determination.",
+          "severity": "ok"
+        },
+        {
+          "param_name": "V0",
+          "fitted_value": 1.982,
+          "fitted_error": 74.1,
+          "units": "V",
+          "expected_range": "[0.1, 2.0] V",
+          "value_assessment": "unreasonable",
+          "reasoning": "V0 represents the characteristic voltage related to trap depth and barrier parameters. While the central value of ~2 V is marginally acceptable, the enormous uncertainty (\u00b174 V, or 3700% error) renders this parameter completely undetermined. This massive error indicates the model cannot extract meaningful V0 from the data.",
+          "severity": "fatal"
+        }
+      ],
+      "consistency_checks": [
+        {
+          "check_name": "Parameter uncertainty ratio",
+          "passed": false,
+          "reasoning": "Both parameters have uncertainties exceeding or comparable to their fitted values (J0: 960% error, V0: 3740% error). This indicates severe ill-conditioning and that the model cannot be reliably fitted to this dataset."
+        },
+        {
+          "check_name": "Physical regime validity",
+          "passed": false,
+          "reasoning": "TAT models require clear voltage-dependent exponential behavior with sinh modulation. The extremely poor fit quality (R\u00b2=0.23, negative log R\u00b2) suggests the data does not exhibit the expected TAT characteristics, making parameter extraction meaningless."
+        },
+        {
+          "check_name": "ZnO-Au interface compatibility",
+          "passed": false,
+          "reasoning": "For ZnO/Au Schottky contacts, TAT is typically observed only when significant trap states exist at or near the interface. The catastrophic fit quality suggests either insufficient trap density for TAT dominance or that a different mechanism (e.g., Schottky emission, SCLC) governs transport."
+        }
+      ],
+      "suggested_next_if_bad": "Try simpler mechanisms first: (1) Thermionic emission (Schottky) for forward bias to extract barrier height, (2) Direct tunneling if Schottky fails, (3) Space-charge limited current (SCLC) models. Examine raw I-V data plots to identify dominant voltage-scaling behavior before selecting advanced models like TAT.",
       "final_verdict": "rejected",
       "verdict_rank": 1
     }
@@ -392,11 +380,11 @@
     "best_R2_log": 0.938553,
     "trigger_orchestrator": true
   },
-  "orchestrator_feedback": "The Space-charge-limited current model failed catastrophically because ZnO at these voltages does not show bulk-dominated transport; the Au/ZnO interface forms a Schottky barrier that controls the current, so interface mechanisms must dominate. Schottky emission was rejected solely due to n=5.45, but this high ideality factor (matching the extracted n\u22483.2) strongly suggests series resistance is convolving with the true barrier physics\u2014you must implement a Schottky+series-resistance equivalent circuit where Rs is fitted simultaneously with the Schottky parameters before rejecting thermionic emission. Poole-Frenkel and trap-assisted tunneling both failed because the rectification ratio of 226 indicates strong asymmetry from a barrier, not symmetric bulk or tunneling transport. The next attempt should be a two-diode model (parallel combination of ideal Schottky diode with n=1 and a trap-recombination diode with n=2, both in series with Rs) to capture multiple current pathways across the Au/ZnO interface that produce the observed n\u22483.2 as an effective value. Alternatively, try thermionic field emission which interpolates between pure thermionic emission and tunneling for moderately doped ZnO where the barrier is thin enough for field-assisted escape.",
-  "final_report": "====================================================================\n  AGENT IV \u2014 Analysis Report\n  Material  : Data as is, Material is ZnO with Au contacts\n  Timestamp : 2026-05-08 18:22 UTC\n  Iteration : 1\n  T         : 300 K\n====================================================================\n\nVERDICT SUMMARY (4 models tested)\n--------------------------------------------------\n  [REJECTED]  Schottky emission\n             R\u00b2=0.8101  R\u00b2_log=0.938553  \u03c7\u00b2_r=113.3613\n  [REJECTED]  Space-charge-limited current with traps\n             R\u00b2=-11.2894  R\u00b2_log=0.362496  \u03c7\u00b2_r=1044.2367\n  [REJECTED]  Poole-Frenkel emission\n             R\u00b2=-0.3937  R\u00b2_log=None  \u03c7\u00b2_r=399.1095\n  [REJECTED]  Trap-assisted tunneling\n             R\u00b2=0.2228  R\u00b2_log=-6.661231  \u03c7\u00b2_r=369.5063\n\n\nREJECTED MODELS \u2014 BRIEF NOTES\n--------------------------------------------------\n  Schottky emission\n    Numerical flags : R\u00b2=0.810 very low; R\u00b2_log=0.939 below threshold 0.98\n    Physical note   : The ideality factor n = 5.45 is fatally high for Schottky emission, exceeding the physically plausib\n  Space-charge-limited current with traps\n    Numerical flags : R\u00b2=-11.289 very low; R\u00b2_log=0.362 very low (poor log-scale fit)\n    Physical note   : The SCLC model is physically inappropriate for the ZnO-Au system, which forms Schottky barriers. Cri\n  Poole-Frenkel emission\n    Numerical flags : R\u00b2=-0.394 very low; \u03c7\u00b2_red=399.1 >> 1  (very poor fit)\n    Physical note   : While individual parameter values are within or near acceptable physical ranges for ZnO, the catastr\n  Trap-assisted tunneling\n    Numerical flags : R\u00b2=0.223 very low; R\u00b2_log=-6.661 very low (poor log-scale fit)\n    Physical note   : The fitted E_TAT parameter is physically unreasonable for trap-assisted tunneling in ZnO, being an o\n\nORCHESTRATOR FEEDBACK FOR NEXT ITERATION\n--------------------------------------------------\nThe Space-charge-limited current model failed catastrophically because ZnO at these voltages does not show bulk-dominated transport; the Au/ZnO interface forms a Schottky barrier that controls the current, so interface mechanisms must dominate. Schottky emission was rejected solely due to n=5.45, but this high ideality factor (matching the extracted n\u22483.2) strongly suggests series resistance is convolving with the true barrier physics\u2014you must implement a Schottky+series-resistance equivalent circuit where Rs is fitted simultaneously with the Schottky parameters before rejecting thermionic emission. Poole-Frenkel and trap-assisted tunneling both failed because the rectification ratio of 226 indicates strong asymmetry from a barrier, not symmetric bulk or tunneling transport. The next attempt should be a two-diode model (parallel combination of ideal Schottky diode with n=1 and a trap-recombination diode with n=2, both in series with Rs) to capture multiple current pathways across the Au/ZnO interface that produce the observed n\u22483.2 as an effective value. Alternatively, try thermionic field emission which interpolates between pure thermionic emission and tunneling for moderately doped ZnO where the barrier is thin enough for field-assisted escape.\n\n====================================================================",
+  "orchestrator_feedback": "The repeated failure of Schottky emission due to unreasonably high ideality factor (n=5.45, data suggests n=3.23) indicates the junction is dominated by multi-step recombination or defect-assisted transport rather than simple thermionic emission over a single barrier. Space-charge-limited current models fail because the Au/ZnO interface is rectifying (rectification ratio=226), not bulk-limited, and the SCLC thickness parameter is unphysical. Poole-Frenkel emission should be avoided as it gave negative R\u00b2 and unreasonable \u03b2_PF, suggesting bulk trap emission is not the primary mechanism. The high ideality factor combined with strong rectification points toward interface recombination models: try a **two-diode model** (Schottky + recombination diode in parallel) or **recombination-generation current** in the depletion region with ideality n\u22482-4, which can explain the observed n=3.23. Also consider **thermionic-field emission** or **field emission** mechanisms that account for tunneling through a Schottky barrier at moderate doping levels, as these can produce effective ideality factors exceeding 2 while maintaining rectification.",
+  "final_report": "====================================================================\n  AGENT IV \u2014 Analysis Report\n  Material  : Data as is, Material is ZnO with Au contacts\n  Timestamp : 2026-05-08 18:29 UTC\n  Iteration : 1\n  T         : 300 K\n====================================================================\n\nVERDICT SUMMARY (4 models tested)\n--------------------------------------------------\n  [REJECTED]  Schottky emission\n             R\u00b2=0.8101  R\u00b2_log=0.938553  \u03c7\u00b2_r=113.3613\n  [REJECTED]  Space-charge-limited current with traps\n             R\u00b2=0.8052  R\u00b2_log=0.353071  \u03c7\u00b2_r=194.5976\n  [REJECTED]  Poole-Frenkel emission\n             R\u00b2=-0.3937  R\u00b2_log=None  \u03c7\u00b2_r=399.1095\n  [REJECTED]  Trap-assisted tunneling (TAT)\n             R\u00b2=0.2343  R\u00b2_log=-6.068673  \u03c7\u00b2_r=368.4929\n\n\nREJECTED MODELS \u2014 BRIEF NOTES\n--------------------------------------------------\n  Schottky emission\n    Numerical flags : R\u00b2=0.810 very low; R\u00b2_log=0.939 below threshold 0.98\n    Physical note   : While A* and \u03c6_B individually fall within physically plausible ranges for Au/ZnO, the ideality facto\n  Space-charge-limited current with traps\n    Numerical flags : R\u00b2=0.805 very low; R\u00b2_log=0.353 very low (poor log-scale fit)\n    Physical note   : Two fatal issues invalidate this model: (1) the fitted thickness is 2.5\u00d7 the actual device thickness\n  Poole-Frenkel emission\n    Numerical flags : R\u00b2=-0.394 very low; \u03c7\u00b2_red=399.1 >> 1  (very poor fit)\n    Physical note   : The fitted Poole-Frenkel coefficient is an order of magnitude too small for ZnO's dielectric constan\n  Trap-assisted tunneling (TAT)\n    Numerical flags : R\u00b2=0.234 very low; R\u00b2_log=-6.069 very low (poor log-scale fit)\n    Physical note   : While the J0 central value is physically plausible, both parameters have catastrophically large unce\n\nORCHESTRATOR FEEDBACK FOR NEXT ITERATION\n--------------------------------------------------\nThe repeated failure of Schottky emission due to unreasonably high ideality factor (n=5.45, data suggests n=3.23) indicates the junction is dominated by multi-step recombination or defect-assisted transport rather than simple thermionic emission over a single barrier. Space-charge-limited current models fail because the Au/ZnO interface is rectifying (rectification ratio=226), not bulk-limited, and the SCLC thickness parameter is unphysical. Poole-Frenkel emission should be avoided as it gave negative R\u00b2 and unreasonable \u03b2_PF, suggesting bulk trap emission is not the primary mechanism. The high ideality factor combined with strong rectification points toward interface recombination models: try a **two-diode model** (Schottky + recombination diode in parallel) or **recombination-generation current** in the depletion region with ideality n\u22482-4, which can explain the observed n=3.23. Also consider **thermionic-field emission** or **field emission** mechanisms that account for tunneling through a Schottky barrier at moderate doping levels, as these can produce effective ideality factors exceeding 2 while maintaining rectification.\n\n====================================================================",
   "orchestrator_instructions": {
     "trigger": true,
-    "feedback_for_agent1": "The Space-charge-limited current model failed catastrophically because ZnO at these voltages does not show bulk-dominated transport; the Au/ZnO interface forms a Schottky barrier that controls the current, so interface mechanisms must dominate. Schottky emission was rejected solely due to n=5.45, but this high ideality factor (matching the extracted n\u22483.2) strongly suggests series resistance is convolving with the true barrier physics\u2014you must implement a Schottky+series-resistance equivalent circuit where Rs is fitted simultaneously with the Schottky parameters before rejecting thermionic emission. Poole-Frenkel and trap-assisted tunneling both failed because the rectification ratio of 226 indicates strong asymmetry from a barrier, not symmetric bulk or tunneling transport. The next attempt should be a two-diode model (parallel combination of ideal Schottky diode with n=1 and a trap-recombination diode with n=2, both in series with Rs) to capture multiple current pathways across the Au/ZnO interface that produce the observed n\u22483.2 as an effective value. Alternatively, try thermionic field emission which interpolates between pure thermionic emission and tunneling for moderately doped ZnO where the barrier is thin enough for field-assisted escape.",
+    "feedback_for_agent1": "The repeated failure of Schottky emission due to unreasonably high ideality factor (n=5.45, data suggests n=3.23) indicates the junction is dominated by multi-step recombination or defect-assisted transport rather than simple thermionic emission over a single barrier. Space-charge-limited current models fail because the Au/ZnO interface is rectifying (rectification ratio=226), not bulk-limited, and the SCLC thickness parameter is unphysical. Poole-Frenkel emission should be avoided as it gave negative R\u00b2 and unreasonable \u03b2_PF, suggesting bulk trap emission is not the primary mechanism. The high ideality factor combined with strong rectification points toward interface recombination models: try a **two-diode model** (Schottky + recombination diode in parallel) or **recombination-generation current** in the depletion region with ideality n\u22482-4, which can explain the observed n=3.23. Also consider **thermionic-field emission** or **field emission** mechanisms that account for tunneling through a Schottky barrier at moderate doping levels, as these can produce effective ideality factors exceeding 2 while maintaining rectification.",
     "next_iteration": 2,
     "reason": "No accepted or plausible model found"
   }
