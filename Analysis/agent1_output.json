@@ -1,7 +1,7 @@
 {
   "meta": {
     "agent": "agent1_hypothesis",
-    "timestamp": "2026-05-08T19:06:01.957425+00:00",
+    "timestamp": "2026-05-08T19:10:20.495696+00:00",
     "iteration": 1,
     "material_prompt": "Data as is, Material is ZnO with Au contacts",
     "geometry": {
@@ -1310,22 +1310,22 @@
   },
   "hypotheses": [
     {
-      "mechanism_name": "Schottky emission with series resistance",
-      "description": "Thermionic emission over the Au/ZnO Schottky barrier dominates forward conduction. The high ideality factor (n=3.23) suggests significant series resistance and/or interface states.",
+      "mechanism_name": "Schottky emission with high ideality factor",
+      "description": "Thermionic emission over Au/ZnO Schottky barrier, modified by interface states and image-force lowering. High ideality factor (n=3.23) suggests significant recombination or inhomogeneous barrier.",
       "dominant_regime": "forward",
-      "equation_latex": "J = A^* T^2 \\exp\\left(-\\frac{q\\phi_B}{k_B T}\\right) \\left[\\exp\\left(\\frac{qV}{n k_B T}\\right) - 1\\right]",
-      "equation_python": "lambda V, E, T, p: p['Astar'] * T**2 * np.exp(-p['phiB'] / (8.617e-5 * T)) * (np.exp(V / (p['n'] * 8.617e-5 * T)) - 1)",
+      "equation_latex": "J = A^* T^2 \\exp\\left(-\\frac{q\\phi_B}{kT}\\right) \\left[\\exp\\left(\\frac{qV}{nkT}\\right) - 1\\right]",
+      "equation_python": "lambda V, E, T, p: p['A_star'] * T**2 * np.exp(-p['phi_B'] / (8.617e-5 * T)) * (np.exp(V / (p['n'] * 8.617e-5 * T)) - 1)",
       "free_params": [
         {
-          "name": "Astar",
+          "name": "A_star",
           "symbol": "A^*",
-          "units": "A/(cm\u00b2\u00b7K\u00b2)",
+          "units": "A/(cm^2*K^2)",
           "init_guess": 32.0,
           "bounds_low": 1.0,
           "bounds_high": 200.0
         },
         {
-          "name": "phiB",
+          "name": "phi_B",
           "symbol": "\\phi_B",
           "units": "eV",
           "init_guess": 0.7,
@@ -1345,55 +1345,55 @@
         "V",
         "J"
       ],
-      "literature_ref": "Sze and Ng, 2006, Physics of Semiconductor Devices",
+      "literature_ref": "Sze and Ng, 2007, Physics of Semiconductor Devices",
       "priority": 1
     },
     {
-      "mechanism_name": "Space-charge-limited current with traps",
-      "description": "Forward current controlled by SCLC in ZnO with exponential trap distribution. Voltage-dependent trap filling leads to super-quadratic J-V behavior consistent with high ideality factor.",
+      "mechanism_name": "Space-charge-limited current with traps (SCLC)",
+      "description": "SCLC dominated by exponential trap distribution in ZnO film. At moderate voltages, trapped charge limits current following Child's law with trap modification factor.",
       "dominant_regime": "forward",
-      "equation_latex": "J = \\frac{9}{8} \\varepsilon \\mu \\theta \\frac{V^2}{d^3}, \\quad \\theta = \\left(\\frac{V}{V_{TFL}}\\right)^{m-1}",
-      "equation_python": "lambda V, E, T, p: (9.0/8.0) * p['eps'] * p['mu'] * np.where(V > 0, (V / p['VTFL'])**(p['m']-1), 1e-20) * (V**2 / p['d']**3)",
+      "equation_latex": "J = \\frac{9}{8} \\varepsilon_r \\varepsilon_0 \\mu \\theta \\frac{V^2}{d^3}, \\quad \\theta = \\left(\\frac{qV}{kT}\\right)^{m-1} \\exp\\left(-\\frac{E_t}{kT}\\right)",
+      "equation_python": "lambda V, E, T, p: (9.0/8.0) * p['eps_r'] * 8.854e-14 * p['mu'] * np.exp(-p['E_t']/(8.617e-5*T)) * (np.maximum(V, 1e-6)/(8.617e-5*T))**(p['m']-1) * V**2 / (p['d']**3)",
       "free_params": [
-        {
-          "name": "eps",
-          "symbol": "\\varepsilon",
-          "units": "F/cm",
-          "init_guess": 8e-13,
-          "bounds_low": 1e-13,
-          "bounds_high": 1e-11
-        },
         {
           "name": "mu",
           "symbol": "\\mu",
-          "units": "cm\u00b2/(V\u00b7s)",
+          "units": "cm^2/(V*s)",
           "init_guess": 1.0,
           "bounds_low": 0.001,
           "bounds_high": 100.0
         },
         {
-          "name": "VTFL",
-          "symbol": "V_{TFL}",
-          "units": "V",
-          "init_guess": 0.5,
-          "bounds_low": 0.1,
-          "bounds_high": 5.0
+          "name": "eps_r",
+          "symbol": "\\varepsilon_r",
+          "units": "dimensionless",
+          "init_guess": 8.5,
+          "bounds_low": 5.0,
+          "bounds_high": 15.0
+        },
+        {
+          "name": "E_t",
+          "symbol": "E_t",
+          "units": "eV",
+          "init_guess": 0.3,
+          "bounds_low": 0.05,
+          "bounds_high": 0.8
         },
         {
           "name": "m",
           "symbol": "m",
           "units": "dimensionless",
-          "init_guess": 2.5,
-          "bounds_low": 1.5,
-          "bounds_high": 6.0
+          "init_guess": 1.5,
+          "bounds_low": 1.0,
+          "bounds_high": 3.0
         },
         {
           "name": "d",
           "symbol": "d",
           "units": "cm",
           "init_guess": 2e-05,
-          "bounds_low": 1e-05,
-          "bounds_high": 5e-05
+          "bounds_low": 1.5e-05,
+          "bounds_high": 2.5e-05
         }
       ],
       "normalization_needed": [
@@ -1405,33 +1405,34 @@
     },
     {
       "mechanism_name": "Poole-Frenkel emission from bulk traps",
-      "description": "Field-enhanced thermal emission from Coulombic traps in ZnO bulk. The ln(J/E) vs sqrt(E) relationship becomes linear at moderate to high fields, explaining both forward and reverse asymmetry.",
-      "equation_latex": "J = J_0 E \\exp\\left(\\frac{-q(\\phi_t - \\beta_{PF}\\sqrt{E})}{k_B T}\\right), \\quad \\beta_{PF} = \\sqrt{\\frac{q^3}{\\pi\\varepsilon}}",
-      "equation_python": "lambda V, E, T, p: p['J0'] * np.abs(E) * np.exp((-p['phit'] + p['betaPF'] * np.sqrt(np.abs(E) + 1e-10)) / (8.617e-5 * T))",
+      "description": "Field-enhanced thermal emission from Coulombic trap states in ZnO bulk. Dominant in reverse and high-field forward bias where electric field lowers trap ionization energy.",
+      "dominant_regime": "both",
+      "equation_latex": "J = J_0 \\exp\\left(\\frac{q}{kT}\\sqrt{\\frac{qE}{\\pi\\varepsilon_r\\varepsilon_0}}\\right) \\exp\\left(-\\frac{\\phi_t}{kT}\\right)",
+      "equation_python": "lambda V, E, T, p: p['J0_PF'] * np.exp(-p['phi_t']/(8.617e-5*T)) * np.exp((1.0/(8.617e-5*T)) * np.sqrt(1.6e-19 * np.abs(E*1e6) / (np.pi * p['eps_r_PF'] * 8.854e-12)))",
       "free_params": [
         {
-          "name": "J0",
+          "name": "J0_PF",
           "symbol": "J_0",
-          "units": "A\u00b7cm/V",
-          "init_guess": 1e-09,
+          "units": "A/cm^2",
+          "init_guess": 1e-08,
           "bounds_low": 1e-15,
           "bounds_high": 0.001
         },
         {
-          "name": "phit",
+          "name": "phi_t",
           "symbol": "\\phi_t",
           "units": "eV",
           "init_guess": 0.5,
-          "bounds_low": 0.1,
-          "bounds_high": 1.5
+          "bounds_low": 0.2,
+          "bounds_high": 1.2
         },
         {
-          "name": "betaPF",
-          "symbol": "\\beta_{PF}",
-          "units": "eV\u00b7cm^{0.5}/V^{0.5}",
-          "init_guess": 2.5e-05,
-          "bounds_low": 1e-06,
-          "bounds_high": 0.0001
+          "name": "eps_r_PF",
+          "symbol": "\\varepsilon_r",
+          "units": "dimensionless",
+          "init_guess": 8.5,
+          "bounds_low": 3.0,
+          "bounds_high": 15.0
         }
       ],
       "normalization_needed": [
@@ -1443,42 +1444,35 @@
       "priority": 3
     },
     {
-      "mechanism_name": "Grain-boundary-limited Schottky emission",
-      "description": "Transport limited by potential barriers at ZnO grain boundaries. Each grain boundary acts as a micro-Schottky barrier, with total voltage distributed across multiple barriers leading to effective high ideality factor.",
+      "mechanism_name": "Trap-assisted tunneling (TAT)",
+      "description": "Direct tunneling through localized trap states in ZnO band gap, prevalent at low-to-moderate fields. Combines tunneling probability with trap occupation, important for defective polycrystalline films.",
       "dominant_regime": "both",
-      "equation_latex": "J = A^* T^2 \\exp\\left(-\\frac{q\\phi_{GB}}{k_B T}\\right) \\exp\\left(\\frac{qV}{N_{GB} k_B T}\\right)",
-      "equation_python": "lambda V, E, T, p: p['Astar'] * T**2 * np.exp(-p['phiGB'] / (8.617e-5 * T)) * np.exp(V / (p['NGB'] * 8.617e-5 * T))",
+      "equation_latex": "J = J_{TAT} \\exp\\left(-\\frac{2\\sqrt{2m^*\\phi_t}}{\\hbar qE}\\right) \\sinh\\left(\\frac{qV}{2kT}\\right)",
+      "equation_python": "lambda V, E, T, p: p['J_TAT'] * np.exp(-p['C_TAT'] / np.maximum(np.abs(E), 0.01)) * np.sinh(V / (2.0 * 8.617e-5 * T))",
       "free_params": [
         {
-          "name": "Astar",
-          "symbol": "A^*",
-          "units": "A/(cm\u00b2\u00b7K\u00b2)",
-          "init_guess": 10.0,
-          "bounds_low": 0.1,
-          "bounds_high": 100.0
+          "name": "J_TAT",
+          "symbol": "J_{TAT}",
+          "units": "A/cm^2",
+          "init_guess": 1e-06,
+          "bounds_low": 1e-12,
+          "bounds_high": 0.01
         },
         {
-          "name": "phiGB",
-          "symbol": "\\phi_{GB}",
-          "units": "eV",
-          "init_guess": 0.3,
-          "bounds_low": 0.05,
-          "bounds_high": 1.0
-        },
-        {
-          "name": "NGB",
-          "symbol": "N_{GB}",
-          "units": "dimensionless",
+          "name": "C_TAT",
+          "symbol": "C_{TAT}",
+          "units": "MV/cm",
           "init_guess": 5.0,
-          "bounds_low": 1.0,
+          "bounds_low": 0.5,
           "bounds_high": 50.0
         }
       ],
       "normalization_needed": [
         "V",
+        "E_MVcm",
         "J"
       ],
-      "literature_ref": "Seto, 1975, Journal of Applied Physics",
+      "literature_ref": "Hurkx et al., 1992, IEEE Trans. Electron Devices",
       "priority": 4
     }
   ],
