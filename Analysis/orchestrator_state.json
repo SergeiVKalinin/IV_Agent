@@ -8,7 +8,7 @@
   "csv_path": "schottky_iv_dummy.csv",
   "current_iteration": 3,
   "max_iterations": 3,
-  "status": "running",
+  "status": "escalated",
   "tried_mechanisms": [
     "Trap_assisted_tunneling_with_Schottky",
     "Schottky_emission",
@@ -17,7 +17,11 @@
     "Two-Diode Model (Schottky + Interface Recombination)",
     "Three-Element Circuit: Schottky + Recombination + SCLC",
     "Voltage-Dependent Contact Resistance with Schottky",
-    "Schottky + Trap-Assisted Tunneling Hybrid"
+    "Schottky + Trap-Assisted Tunneling Hybrid",
+    "Single_diode_recombination_with_parasitics",
+    "Grain_boundary_limited_transport",
+    "Interface_recombination_single_trap",
+    "Ohmic_plus_exponential_leakage"
   ],
   "verdict_history": [
     {
@@ -109,6 +113,51 @@
       "best_model": "Two-Diode Model (Schottky + Interface Recombination)",
       "best_verdict": "rejected",
       "best_R2_log": 0.872053
+    },
+    {
+      "iteration": 3,
+      "timestamp": "2026-05-08T19:37:49.641537+00:00",
+      "models": [
+        {
+          "name": "Single_diode_recombination_with_parasitics",
+          "verdict": "rejected",
+          "R2": -0.393712,
+          "R2_log": null,
+          "numerical": "rejected",
+          "physical": "unreasonable",
+          "residual_pat": "high-V systematic"
+        },
+        {
+          "name": "Grain_boundary_limited_transport",
+          "verdict": "rejected",
+          "R2": -0.393712,
+          "R2_log": null,
+          "numerical": "rejected",
+          "physical": "unreasonable",
+          "residual_pat": "high-V systematic"
+        },
+        {
+          "name": "Interface_recombination_single_trap",
+          "verdict": "rejected",
+          "R2": -0.393712,
+          "R2_log": null,
+          "numerical": "rejected",
+          "physical": "unreasonable",
+          "residual_pat": "high-V systematic"
+        },
+        {
+          "name": "Ohmic_plus_exponential_leakage",
+          "verdict": "rejected",
+          "R2": -0.393712,
+          "R2_log": null,
+          "numerical": "rejected",
+          "physical": "unreasonable",
+          "residual_pat": "high-V systematic"
+        }
+      ],
+      "best_model": "Single_diode_recombination_with_parasitics",
+      "best_verdict": "rejected",
+      "best_R2_log": null
     }
   ],
   "feedback_history": [
@@ -137,6 +186,17 @@
         "Low-V slope \u2192 Rsh\u22489897 \u03a9\u00b7cm\u00b2.",
         "Residuals grow 8416.8\u00d7 at high V \u2192 Rs\u22480.7 \u03a9\u00b7cm\u00b2."
       ]
+    },
+    {
+      "needs_series_resistance": true,
+      "Rs_estimate_ohm_cm2": 1.0,
+      "needs_shunt_resistance": true,
+      "Rsh_estimate_ohm_cm2": 9896.805337878093,
+      "needs_parallel_mechanism": false,
+      "evidence": [
+        "Low-V slope \u2192 Rsh\u22489897 \u03a9\u00b7cm\u00b2.",
+        "Residuals grow 237.2\u00d7 at high V \u2192 Rs\u22481.0 \u03a9\u00b7cm\u00b2."
+      ]
     }
   ],
   "best_result": {
@@ -155,5 +215,5 @@
     }
   },
   "created_at": "2026-05-08T19:23:17.872490+00:00",
-  "updated_at": "2026-05-08T19:35:12.529559+00:00"
+  "updated_at": "2026-05-08T19:37:49.641576+00:00"
 }
