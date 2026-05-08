@@ -1,0 +1,58 @@
+====================================================================
+  AGENT IV — Meta-Analysis Audit Report
+  Material   : Data as is, Material is ZnO with Au contacts
+  Timestamp  : 2026-05-08 21:37 UTC
+  Status     : ESCALATED
+  Iterations : 3
+====================================================================
+
+WINNING MODEL
+--------------------------------------------------
+  Model   : Multistep_Tunneling_Through_Interface_States
+  Verdict : rejected
+  R²      : 0.966002
+  R²_log  : 0.976355
+
+REASONING CONSISTENCY AUDIT
+--------------------------------------------------
+  Score: 35/100
+  The pipeline exhibits severe logical inconsistencies. The Orchestrator demanded recombination-dominated mechanisms in iteration 1 while simultaneously listing Ohmic and tunneling models as initial hypotheses. Agent 1 ignored the recombination directive in iteration 1, generating rejected barrier/bulk models. The reasoning chain contradicts itself, with iteration 2 correctly pivoting to Ohmic models only after forced to acknowledge recombination failure, wasting an entire iteration on catastrophically poor fits.
+
+  ✗ [CRITICAL] Agent 1 avoided Orchestrator-rejected mechanisms
+          Iteration 1: Orchestrator explicitly requested 'recombination-dominated mechanisms with n≈2, not bar
+  ✓ [LOW    ] Agent 1 followed circuit-element suggestions
+  ✗ [HIGH   ] Orchestrator diagnosis consistent with data statistics
+          Iteration 1 feedback insisted on recombination mechanisms (n≈2), yet all diode models in iteration 2
+  ✗ [HIGH   ] R²_log improvement across iterations
+          Iteration 1 best: 0.942369 (SCLC). Iteration 2 best: 0.627643 (Interface_Recombination). Iteration 3
+  ✗ [CRITICAL] Logical contradictions in reasoning chain
+          Major contradiction: Initial hypotheses list included 'Ohmic_Leakage_Plus_Series_R' and tunneling mo
+
+EXPERT COUNTERFACTUAL
+--------------------------------------------------
+  Expert first choice : Schottky_diode_with_high_ideality_factor
+  Pipeline vs expert  : diverged
+  Confidence          : low
+  The pipeline selected multistep tunneling as best fit despite marking it 'unreasonable', while all physically-reasonable models including Schottky emission were rejected. An expert would be highly suspicious: Au-ZnO is a canonical Schottky system, and n≈2 strongly indicates recombination current, not tunneling. The pipeline appears to have fitting quality criteria that override physical plausibility, leading to selection of an inappropriate mechanism. The negative R² values for multiple models suggest possible data quality issues or voltage range problems.
+
+METHODS NARRATIVE
+--------------------------------------------------
+  An automated IV-curve analysis pipeline was applied to Au-ZnO contact data. The pipeline evaluated four transport mechanisms: multistep tunneling, ohmic leakage, Fowler-Nordheim tunneling, and Schottky emission with barrier lowering. Multistep tunneling yielded the highest log-scale R² of 0.976, but was flagged as physically unreasonable with extracted parameters including m=4.79 steps and Rs=5.54 Ω. All other models showed poor fits with negative R² values or failed physical validation. The extracted ideality factor of n≈2.05 is inconsistent with the selected tunneling mechanism but typical of Schottky contacts with generation-recombination current. The pipeline's rejection of all candidates despite selecting a 'best' model indicates fundamental issues with either data quality, model library coverage, or validation criteria.
+
+FOLLOW-UP EXPERIMENTS
+--------------------------------------------------
+  • Inspect raw IV data for anomalies, noise, or limited voltage range
+  • Verify contact quality and measure barrier height independently via C-V
+  • Add Schottky models with explicit recombination-generation terms (n=2 pathway)
+  • Temperature-dependent IV to distinguish recombination from tunneling mechanisms
+  • Check if 'rectification N/A' indicates symmetric/linear IV suggesting contact degradation
+
+PIPELINE IMPROVEMENTS
+--------------------------------------------------
+  • Align initial hypotheses with iteration 1 feedback—do not request recombination-only if Ohmic/tunneling are viable candidates
+  • Implement early-stage model pre-screening: test simple Ohmic baseline before complex recombination models to avoid wasted iterations
+  • Add Agent 1 compliance checks: reject iterations where generated models violate explicit Orchestrator constraints (e.g., 'not barrier emission')
+  • Establish R²_log degradation triggers: if best R²_log drops >0.2 between iterations, automatically revert to previous iteration's best mechanism family
+  • Document the pivot reasoning: iteration 2's recognition that 'device does not follow exponential behavior' should have been flagged earlier given ZnO+Au contact physics
+
+====================================================================
