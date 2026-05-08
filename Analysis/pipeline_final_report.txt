@@ -1,0 +1,50 @@
+====================================================================
+  AGENT IV — Final Pipeline Report
+  Material   : Data as is, Material is ZnO with Au contacts
+  Timestamp  : 2026-05-08 19:37 UTC
+  Iterations : 3
+  Status     : ESCALATED
+====================================================================
+
+⚠  ESCALATED after 3 iterations.
+  Best : Two-Diode Model (Schottky + Interface Recombination)  R²_log=0.872053
+  Manual review required.
+
+
+ITERATION HISTORY
+--------------------------------------------------
+
+  Iter 1  best=Trap_assisted_tunneling_with_Schottky  R²_log=0.938556
+    [REJECTED] Trap_assisted_tunneling_with_Schottky
+    [REJECTED] Schottky_emission
+    [REJECTED] SCLC_single_trap_level
+    [REJECTED] Poole_Frenkel_emission
+
+  Iter 2  best=Two-Diode Model (Schottky + Interface Recombination)  R²_log=0.872053
+    [REJECTED] Two-Diode Model (Schottky + Interface Recombination)
+    [REJECTED] Three-Element Circuit: Schottky + Recombination + SCLC
+    [REJECTED] Voltage-Dependent Contact Resistance with Schottky
+    [REJECTED] Schottky + Trap-Assisted Tunneling Hybrid
+
+  Iter 3  best=Single_diode_recombination_with_parasitics  R²_log=None
+    [REJECTED] Single_diode_recombination_with_parasitics
+    [REJECTED] Grain_boundary_limited_transport
+    [REJECTED] Interface_recombination_single_trap
+    [REJECTED] Ohmic_plus_exponential_leakage
+
+ALL TRIED
+--------------------------------------------------
+   1. Trap_assisted_tunneling_with_Schottky
+   2. Schottky_emission
+   3. SCLC_single_trap_level
+   4. Poole_Frenkel_emission
+   5. Two-Diode Model (Schottky + Interface Recombination)
+   6. Three-Element Circuit: Schottky + Recombination + SCLC
+   7. Voltage-Dependent Contact Resistance with Schottky
+   8. Schottky + Trap-Assisted Tunneling Hybrid
+   9. Single_diode_recombination_with_parasitics
+  10. Grain_boundary_limited_transport
+  11. Interface_recombination_single_trap
+  12. Ohmic_plus_exponential_leakage
+
+====================================================================
