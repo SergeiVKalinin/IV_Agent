@@ -10,39 +10,39 @@
   "max_iterations": 3,
   "status": "running",
   "tried_mechanisms": [
-    "SCLC_single_trap",
     "Schottky_emission",
-    "Trap_assisted_tunneling",
+    "SCLC_single_trap_level",
+    "trap_assisted_tunneling_TAT",
     "Poole_Frenkel_emission"
   ],
   "verdict_history": [
     {
       "iteration": 1,
-      "timestamp": "2026-05-08T20:06:45.195512+00:00",
+      "timestamp": "2026-05-08T20:10:57.281019+00:00",
       "models": [
-        {
-          "name": "SCLC_single_trap",
-          "verdict": "rejected",
-          "R2": 0.107564,
-          "R2_log": 0.726998,
-          "numerical": "rejected",
-          "physical": "unreasonable",
-          "residual_pat": "high-V systematic"
-        },
         {
           "name": "Schottky_emission",
           "verdict": "rejected",
-          "R2": 0.481204,
-          "R2_log": 0.418272,
+          "R2": 0.700383,
+          "R2_log": 0.85441,
           "numerical": "rejected",
           "physical": "unreasonable",
           "residual_pat": "high-V systematic"
         },
         {
-          "name": "Trap_assisted_tunneling",
+          "name": "SCLC_single_trap_level",
           "verdict": "rejected",
-          "R2": 0.237307,
-          "R2_log": -2.465838,
+          "R2": 0.98363,
+          "R2_log": 0.691767,
+          "numerical": "rejected",
+          "physical": "unreasonable",
+          "residual_pat": "high-V systematic"
+        },
+        {
+          "name": "trap_assisted_tunneling_TAT",
+          "verdict": "rejected",
+          "R2": 0.426906,
+          "R2_log": 0.600754,
           "numerical": "rejected",
           "physical": "unreasonable",
           "residual_pat": "high-V systematic"
@@ -50,48 +50,45 @@
         {
           "name": "Poole_Frenkel_emission",
           "verdict": "rejected",
-          "R2": -0.394297,
-          "R2_log": -10.120042,
+          "R2": -0.878931,
+          "R2_log": -10.084675,
           "numerical": "rejected",
           "physical": "unreasonable",
           "residual_pat": "high-V systematic"
         }
       ],
-      "best_model": "SCLC_single_trap",
+      "best_model": "Schottky_emission",
       "best_verdict": "rejected",
-      "best_R2_log": 0.726998
+      "best_R2_log": 0.85441
     }
   ],
   "feedback_history": [
-    "Implement a two-diode model as highest priority: J_total = J01\u00b7(exp(qV_eff/kT)-1) + J02\u00b7(exp(qV_eff/2kT)-1) where V_eff = V - J\u00b7Rs accounts for the measured 0.8 \u03a9\u00b7cm\u00b2 series resistance. Fix n1=1.0 for the thermionic component and n2=2.0 for the recombination component. Initialize J01\u22481e-10 A/cm\u00b2 and J02\u22481e-9 A/cm\u00b2 based on the measured ideality factor being closer to 2. The model should fit three free parameters: J01, J02, and Rs (initialize Rs=0.8). This topology directly addresses the n\u22482.05 signature indicating that recombination current in the depletion region dominates over pure thermionic emission, consistent with trap states at the Au/ZnO interface or in the near-surface depletion region. The series resistance must be included to capture the high-voltage rolloff (residuals grow 1900\u00d7). As secondary priority, implement thermionic-field emission with tunneling parameter E00 to test whether thin-barrier tunneling contributes, but the two-diode approach is more physically transparent for n\u22482 behavior. Expect J02 > J01 by 5-50\u00d7 given the measured n=2.05, and verify that Rs remains near 0.8 \u03a9\u00b7cm\u00b2.\n\nDO NOT propose any of these already-tried mechanisms: .\nCircuit guidance: Include series resistance Rs in the equivalent circuit (init guess \u22480.8 \u03a9\u00b7cm\u00b2). Add a parallel recombination_current path."
+    "Prioritize recombination-based diode models that naturally produce ideality factor n\u22482. Start with the simplest model: a single diode with fixed n=2 and series resistance Rs\u22480.73 \u03a9\u00b7cm\u00b2, fitting only J0 as the saturation current (expect J0 in range 10\u207b\u00b9\u2070 to 10\u207b\u2076 A/cm\u00b2). Use the modified current equation J = J0*[exp(qV_eff/(2kT)) - 1] where V_eff = V_applied - J*Rs to account for series resistance voltage drop. If single-diode fit is inadequate, implement the two-diode model with both n=1 (diffusion) and n=2 (recombination) components in parallel, sharing the same Rs\u22480.73 \u03a9\u00b7cm\u00b2. This is the standard equivalent circuit for devices with mixed transport and is physically justified for Au/ZnO contacts with interface states. For the two-diode model, constrain J01 < J02 initially since n\u22482.05 suggests recombination dominates. Fit parameters J01, J02, and Rs simultaneously using voltage-corrected equations. The space-charge recombination model (priority 3) should only be attempted if the two-diode model shows persistent systematic residuals, as it adds mathematical complexity (sinh terms) without necessarily improving physical insight for this near-ideal n=2 case.\n\nDO NOT propose any of these already-tried mechanisms: .\nCircuit guidance: Include series resistance Rs in the equivalent circuit (init guess \u22480.7 \u03a9\u00b7cm\u00b2). Add a parallel recombination_diode_n2 path."
   ],
   "diagnosis_history": [
     {
       "needs_series_resistance": true,
-      "Rs_estimate_ohm_cm2": 0.8024801120321964,
+      "Rs_estimate_ohm_cm2": 0.7274261244842518,
       "needs_shunt_resistance": false,
       "Rsh_estimate_ohm_cm2": null,
       "needs_parallel_mechanism": false,
       "evidence": [
-        "Residuals grow 1900.3\u00d7 at high V \u2192 Rs\u22480.8 \u03a9\u00b7cm\u00b2."
+        "Residuals grow 168.0\u00d7 at high V \u2192 Rs\u22480.7 \u03a9\u00b7cm\u00b2."
       ]
     }
   ],
   "best_result": {
     "iteration": 1,
-    "model": "SCLC_single_trap",
+    "model": "Schottky_emission",
     "verdict": "rejected",
-    "R2": 0.107564,
-    "R2_log": 0.726998,
+    "R2": 0.700383,
+    "R2_log": 0.85441,
     "fit_params": {
-      "mu": 8.462370159109486,
-      "Nt": 1.6439960418393329e+18,
-      "Et": 0.37801568379476314,
-      "eps_r": 8.265926153199528,
-      "Nc": 8.415175357298622e+18,
-      "d": 2.0779524932322682e-05
+      "A_star": 32.295282608649536,
+      "phi_B": 0.6951691149432594,
+      "n": 4.999999999911923
     }
   },
-  "created_at": "2026-05-08T20:03:40.936059+00:00",
-  "updated_at": "2026-05-08T20:06:45.195581+00:00"
+  "created_at": "2026-05-08T20:07:40.823782+00:00",
+  "updated_at": "2026-05-08T20:10:57.281074+00:00"
 }
