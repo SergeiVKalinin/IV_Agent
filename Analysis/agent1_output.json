@@ -1,8 +1,8 @@
 {
   "meta": {
     "agent": "agent1_hypothesis",
-    "timestamp": "2026-05-08T20:11:31.157614+00:00",
-    "iteration": 2,
+    "timestamp": "2026-05-08T20:19:52.948664+00:00",
+    "iteration": 1,
     "material_prompt": "Data as is, Material is ZnO with Au contacts",
     "geometry": {
       "area_cm2": 0.01,
@@ -1310,96 +1310,90 @@
   },
   "hypotheses": [
     {
-      "mechanism_name": "single_diode_n2_with_Rs",
-      "description": "Ideal recombination-limited diode with fixed ideality factor n=2, accounting for series resistance voltage drop. The recombination current dominates when interface states or bulk traps mediate carrier transport through Shockley-Read-Hall processes.",
+      "mechanism_name": "Schottky_Emission",
+      "description": "Thermionic emission over a Schottky barrier at the Au/ZnO interface. The ideality factor n\u22482 suggests significant recombination or barrier inhomogeneity, common in polycrystalline ZnO with native defects.",
       "dominant_regime": "forward",
-      "equation_latex": "J = J_0 \\left[\\exp\\left(\\frac{q(V - J R_s)}{2 k T}\\right) - 1\\right]",
-      "equation_python": "lambda V, E, T, p: p['J0'] * (np.exp(1.60218e-19 * (V - p['J0']*(np.exp(1.60218e-19*V/(2*1.38065e-23*T))-1)*p['Rs']) / (2 * 1.38065e-23 * T)) - 1) if isinstance(V, (int, float)) else p['J0'] * np.array([np.exp(1.60218e-19 * (v - p['J0']*(np.exp(1.60218e-19*v/(2*1.38065e-23*T))-1)*p['Rs']) / (2 * 1.38065e-23 * T)) - 1 for v in V])",
+      "equation_latex": "J = A^* T^2 \\exp\\left(-\\frac{q\\phi_B}{kT}\\right) \\left[\\exp\\left(\\frac{qV}{nkT}\\right) - 1\\right]",
+      "equation_python": "lambda V, E, T, p: p['A_star'] * T**2 * np.exp(-p['phi_B'] / (8.617e-5 * T)) * (np.exp(V / (p['n'] * 0.02586 * T / 300)) - 1)",
       "free_params": [
         {
-          "name": "J0",
-          "symbol": "J_0",
-          "units": "A/cm\u00b2",
-          "init_guess": 1e-08,
-          "bounds_low": 1e-12,
-          "bounds_high": 1e-05
+          "name": "phi_B",
+          "symbol": "\u03c6_B",
+          "units": "eV",
+          "init_guess": 0.7,
+          "bounds_low": 0.4,
+          "bounds_high": 1.2
         },
         {
-          "name": "Rs",
-          "symbol": "R_s",
-          "units": "\u03a9\u00b7cm\u00b2",
-          "init_guess": 0.73,
-          "bounds_low": 0.01,
-          "bounds_high": 10.0
+          "name": "A_star",
+          "symbol": "A^*",
+          "units": "A/(cm\u00b2\u00b7K\u00b2)",
+          "init_guess": 32.0,
+          "bounds_low": 10.0,
+          "bounds_high": 100.0
+        },
+        {
+          "name": "n",
+          "symbol": "n",
+          "units": "dimensionless",
+          "init_guess": 2.05,
+          "bounds_low": 1.5,
+          "bounds_high": 3.0
         }
       ],
       "normalization_needed": [
         "V",
         "J"
       ],
-      "literature_ref": "Sze & Ng, Physics of Semiconductor Devices, 3rd ed., 2007",
+      "literature_ref": "Sze & Ng, Physics of Semiconductor Devices, 3rd Ed., 2007",
       "priority": 1
     },
     {
-      "mechanism_name": "two_diode_parallel_with_Rs",
-      "description": "Parallel combination of diffusion diode (n=1) and recombination diode (n=2) sharing common series resistance. This equivalent circuit model captures mixed transport with interface recombination dominating at intermediate voltages while diffusion contributes at higher currents.",
+      "mechanism_name": "SCLC_Single_Trap_Level",
+      "description": "Space-charge-limited current with a single discrete trap level in the ZnO bandgap. Trap filling and thermal emission control the J-V characteristic, yielding power-law behavior with voltage-dependent slope transitions.",
       "dominant_regime": "forward",
-      "equation_latex": "J = J_{01} \\left[\\exp\\left(\\frac{q(V - J R_s)}{k T}\\right) - 1\\right] + J_{02} \\left[\\exp\\left(\\frac{q(V - J R_s)}{2 k T}\\right) - 1\\right]",
-      "equation_python": "lambda V, E, T, p: (lambda Veff: p['J01']*(np.exp(1.60218e-19*Veff/(1.38065e-23*T))-1) + p['J02']*(np.exp(1.60218e-19*Veff/(2*1.38065e-23*T))-1))(V - p['Rs']*((lambda Veff: p['J01']*(np.exp(1.60218e-19*Veff/(1.38065e-23*T))-1) + p['J02']*(np.exp(1.60218e-19*Veff/(2*1.38065e-23*T))-1))(V)))",
+      "equation_latex": "J = \\frac{9}{8} \\varepsilon_0 \\varepsilon_r \\mu \\theta \\frac{V^2}{d^3}, \\quad \\theta = \\frac{n_c}{N_t} \\exp\\left(\\frac{E_t}{kT}\\right)",
+      "equation_python": "lambda V, E, T, p: (9/8) * p['eps_r'] * 8.854e-14 * p['mu'] * (p['Nc'] / p['Nt']) * np.exp(p['Et'] / (8.617e-5 * T)) * V**2 / (2e-5)**3",
       "free_params": [
         {
-          "name": "J01",
-          "symbol": "J_{01}",
-          "units": "A/cm\u00b2",
-          "init_guess": 1e-10,
-          "bounds_low": 1e-15,
-          "bounds_high": 1e-06
-        },
-        {
-          "name": "J02",
-          "symbol": "J_{02}",
-          "units": "A/cm\u00b2",
-          "init_guess": 1e-08,
-          "bounds_low": 1e-12,
-          "bounds_high": 1e-05
-        },
-        {
-          "name": "Rs",
-          "symbol": "R_s",
-          "units": "\u03a9\u00b7cm\u00b2",
-          "init_guess": 0.73,
+          "name": "mu",
+          "symbol": "\u03bc",
+          "units": "cm\u00b2/(V\u00b7s)",
+          "init_guess": 1.0,
           "bounds_low": 0.01,
-          "bounds_high": 10.0
-        }
-      ],
-      "normalization_needed": [
-        "V",
-        "J"
-      ],
-      "literature_ref": "Werner et al., Applied Physics A, 2001; Green, Solar Cells, 1982",
-      "priority": 2
-    },
-    {
-      "mechanism_name": "space_charge_recombination_sinh",
-      "description": "Space-charge-limited recombination current in the depletion region with hyperbolic sine voltage dependence. Applies when recombination at deep traps dominates, yielding non-exponential J-V behavior at moderate fields.",
-      "equation_latex": "J = J_{00} \\sinh\\left(\\frac{q V}{2 k T}\\right) \\exp\\left(-\\frac{E_t}{k T}\\right)",
-      "equation_python": "lambda V, E, T, p: p['J00'] * np.sinh(1.60218e-19 * V / (2 * 1.38065e-23 * T)) * np.exp(-p['Et'] / (1.38065e-23 * T))",
-      "free_params": [
+          "bounds_high": 100.0
+        },
         {
-          "name": "J00",
-          "symbol": "J_{00}",
-          "units": "A/cm\u00b2",
-          "init_guess": 1e-06,
-          "bounds_low": 1e-10,
-          "bounds_high": 0.01
+          "name": "eps_r",
+          "symbol": "\u03b5_r",
+          "units": "dimensionless",
+          "init_guess": 8.5,
+          "bounds_low": 7.0,
+          "bounds_high": 10.0
+        },
+        {
+          "name": "Nt",
+          "symbol": "N_t",
+          "units": "cm\u207b\u00b3",
+          "init_guess": 1e+17,
+          "bounds_low": 1000000000000000.0,
+          "bounds_high": 1e+19
+        },
+        {
+          "name": "Nc",
+          "symbol": "N_c",
+          "units": "cm\u207b\u00b3",
+          "init_guess": 5e+18,
+          "bounds_low": 1e+18,
+          "bounds_high": 1e+20
         },
         {
           "name": "Et",
           "symbol": "E_t",
           "units": "eV",
           "init_guess": 0.3,
-          "bounds_low": 0.05,
-          "bounds_high": 1.5
+          "bounds_low": 0.1,
+          "bounds_high": 0.8
         }
       ],
       "normalization_needed": [
@@ -1407,61 +1401,93 @@
         "J"
       ],
       "literature_ref": "Lampert & Mark, Current Injection in Solids, 1970",
+      "priority": 2
+    },
+    {
+      "mechanism_name": "Poole_Frenkel",
+      "description": "Field-enhanced thermal emission from Coulombic traps in the ZnO bulk. The ln(J/E) vs sqrt(E) plot should be linear if trap ionization dominates, consistent with high defect density in ZnO thin films.",
+      "dominant_regime": "high-field",
+      "equation_latex": "J = J_0 \\exp\\left(\\frac{-q(\\phi_t - \\sqrt{qE/(\\pi\\varepsilon_0\\varepsilon_r)})}{kT}\\right)",
+      "equation_python": "lambda V, E, T, p: p['J0'] * np.exp((np.sqrt(1.6e-19 * np.abs(E*1e6) / (np.pi * 8.854e-12 * p['eps_r'])) - p['phi_t'] * 1.6e-19) / (1.381e-23 * T))",
+      "free_params": [
+        {
+          "name": "J0",
+          "symbol": "J_0",
+          "units": "A/cm\u00b2",
+          "init_guess": 1e-08,
+          "bounds_low": 1e-12,
+          "bounds_high": 0.001
+        },
+        {
+          "name": "phi_t",
+          "symbol": "\u03c6_t",
+          "units": "eV",
+          "init_guess": 0.5,
+          "bounds_low": 0.2,
+          "bounds_high": 1.5
+        },
+        {
+          "name": "eps_r",
+          "symbol": "\u03b5_r",
+          "units": "dimensionless",
+          "init_guess": 8.5,
+          "bounds_low": 7.0,
+          "bounds_high": 10.0
+        }
+      ],
+      "normalization_needed": [
+        "E_MVcm",
+        "J",
+        "lnJ"
+      ],
+      "literature_ref": "Frenkel, Phys. Rev., 1938; Hill, Phil. Mag., 1971",
       "priority": 3
     },
     {
-      "mechanism_name": "thermionic_emission_with_barrier_lowering",
-      "description": "Schottky thermionic emission over a bias-dependent barrier with image-force lowering and series resistance. The barrier height decreases with applied field, enhancing current at higher voltages beyond simple exponential behavior.",
-      "equation_latex": "J = A^* T^2 \\exp\\left(-\\frac{q(\\phi_b - \\Delta\\phi)}{k T}\\right) \\left[\\exp\\left(\\frac{q(V - J R_s)}{n k T}\\right) - 1\\right], \\quad \\Delta\\phi = \\sqrt{\\frac{q E}{4\\pi\\epsilon_0\\epsilon_r}}",
-      "equation_python": "lambda V, E, T, p: p['A_star'] * T**2 * np.exp(-1.60218e-19 * (p['phi_b'] - np.sqrt(1.60218e-19 * np.abs(E*1e6) / (4*np.pi*8.854e-12*p['eps_r']))) / (1.38065e-23 * T)) * (np.exp(1.60218e-19 * (V - p['A_star']*T**2*np.exp(-1.60218e-19*p['phi_b']/(1.38065e-23*T))*p['Rs']*(np.exp(1.60218e-19*V/(p['n']*1.38065e-23*T))-1)) / (p['n'] * 1.38065e-23 * T)) - 1)",
+      "mechanism_name": "Schottky_Plus_Series_Resistance",
+      "description": "Thermionic emission with series resistance correction accounting for grain boundaries or contact resistance in polycrystalline ZnO. The high ideality factor n\u22482 may reflect distributed Rs effects rather than pure recombination.",
+      "dominant_regime": "forward",
+      "equation_latex": "J = A^* T^2 \\exp\\left(-\\frac{q\\phi_B}{kT}\\right) \\left[\\exp\\left(\\frac{q(V - JRs)}{nkT}\\right) - 1\\right]",
+      "equation_python": "lambda V, E, T, p: p['A_star'] * T**2 * np.exp(-p['phi_B'] / (8.617e-5 * T)) * (np.exp((V - p['J_internal'] * p['Rs']) / (p['n'] * 0.02586 * T / 300)) - 1) if 'J_internal' in p else p['A_star'] * T**2 * np.exp(-p['phi_B'] / (8.617e-5 * T)) * np.expm1(V / (p['n'] * 0.02586 * T / 300))",
       "free_params": [
+        {
+          "name": "phi_B",
+          "symbol": "\u03c6_B",
+          "units": "eV",
+          "init_guess": 0.75,
+          "bounds_low": 0.4,
+          "bounds_high": 1.2
+        },
         {
           "name": "A_star",
           "symbol": "A^*",
           "units": "A/(cm\u00b2\u00b7K\u00b2)",
           "init_guess": 32.0,
-          "bounds_low": 1.0,
-          "bounds_high": 120.0
-        },
-        {
-          "name": "phi_b",
-          "symbol": "\\phi_b",
-          "units": "eV",
-          "init_guess": 0.7,
-          "bounds_low": 0.3,
-          "bounds_high": 1.5
-        },
-        {
-          "name": "eps_r",
-          "symbol": "\\epsilon_r",
-          "units": "dimensionless",
-          "init_guess": 8.5,
-          "bounds_low": 3.0,
-          "bounds_high": 15.0
+          "bounds_low": 10.0,
+          "bounds_high": 100.0
         },
         {
           "name": "n",
           "symbol": "n",
           "units": "dimensionless",
           "init_guess": 2.05,
-          "bounds_low": 1.0,
+          "bounds_low": 1.5,
           "bounds_high": 3.0
         },
         {
           "name": "Rs",
           "symbol": "R_s",
           "units": "\u03a9\u00b7cm\u00b2",
-          "init_guess": 0.73,
-          "bounds_low": 0.01,
-          "bounds_high": 10.0
+          "init_guess": 10.0,
+          "bounds_low": 0.1,
+          "bounds_high": 1000.0
         }
       ],
       "normalization_needed": [
         "V",
-        "J",
-        "E_MVcm"
+        "J"
       ],
-      "literature_ref": "Rhoderick & Williams, Metal-Semiconductor Contacts, 2nd ed., 1988",
+      "literature_ref": "Cheung & Cheung, Appl. Phys. Lett., 1986",
       "priority": 4
     }
   ],
