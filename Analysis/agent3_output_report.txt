@@ -1,23 +1,23 @@
 ====================================================================
   AGENT IV — Analysis Report
   Material  : Data as is, Material is ZnO with Au contacts
-  Timestamp : 2026-05-08 20:06 UTC
+  Timestamp : 2026-05-08 20:10 UTC
   Iteration : 1
   T         : 300 K
 ====================================================================
 
-  [REJECTED]  SCLC_single_trap
-             R²=0.107564  R²_log=0.726998  χ²_r=15345.4634
   [REJECTED]  Schottky_emission
-             R²=0.481204  R²_log=0.418272  χ²_r=320.5432
-  [REJECTED]  Trap_assisted_tunneling
-             R²=0.237307  R²_log=-2.465838  χ²_r=367.5679
+             R²=0.700383  R²_log=0.85441  χ²_r=2011.4781
+  [REJECTED]  SCLC_single_trap_level
+             R²=0.98363  R²_log=0.691767  χ²_r=45112.3753
+  [REJECTED]  trap_assisted_tunneling_TAT
+             R²=0.426906  R²_log=0.600754  χ²_r=221.4704
   [REJECTED]  Poole_Frenkel_emission
-             R²=-0.394297  R²_log=-10.120042  χ²_r=392.8245
+             R²=-0.878931  R²_log=-10.084675  χ²_r=398.8032
 
 
 ORCHESTRATOR FEEDBACK
 --------------------------------------------------
-The SCLC model should be abandoned because despite reasonable individual parameters, the overall physics is unreasonable and the linear-scale fit (R²=0.11) is poor, indicating trap-controlled space charge is not the dominant mechanism. Schottky emission fails with an unreasonable ideality factor of 3, suggesting pure thermionic emission over-the-barrier cannot explain the transport. The high rectification ratio (>2000) and near-ideal n≈2.05 strongly indicate a Schottky diode with significant recombination or tunneling contributions at the metal-semiconductor interface. Try a combined thermionic-field emission (TFE) model that accounts for both barrier height and tunneling through a thin depletion region, or a two-diode model with separate thermionic and recombination current components, since the n≈2 suggests trap-assisted recombination in the space charge region dominates over pure emission. The moderate shunt resistance (~95 kΩ·cm²) and the failure of bulk-limited models (SCLC, Poole-Frenkel) confirm this is interface-controlled transport in a moderately doped ZnO Schottky junction.
+The IV data shows a near-ideal ideality factor of 2.05, which strongly suggests recombination-dominated transport rather than pure thermionic emission or trap-assisted tunneling mechanisms. Avoid Schottky emission (n=5 is physically unreasonable), SCLC (poor log-space fit despite high R² indicates wrong functional form), TAT (unreasonable prefactor and barrier height), and Poole-Frenkel (catastrophic negative R² confirms inapplicable mechanism). The ideality factor near 2.0 is a critical constraint pointing to interface recombination or recombination in the depletion region; try a two-diode equivalent circuit model with one ideal diode (n=1) for diffusion current and one recombination diode (n=2) in parallel, both with series resistance. Alternatively, explore a single-diode model with fixed n=2 and temperature-dependent saturation current to capture the recombination physics, or consider space-charge recombination models for metal-semiconductor contacts. The small current density at zero bias (1.14 µA/cm²) and moderate voltage range suggest interface-dominated rather than bulk-dominated transport.
 
 ====================================================================
