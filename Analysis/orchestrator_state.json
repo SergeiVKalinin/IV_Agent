@@ -10,39 +10,30 @@
   "max_iterations": 3,
   "status": "running",
   "tried_mechanisms": [
+    "Schottky_series_resistance",
     "Schottky_emission",
-    "Schottky_SCLC_hybrid",
-    "SCLC_single_trap",
-    "Poole_Frenkel_emission"
+    "Poole_Frenkel_emission",
+    "Trap_SCLC_single_level"
   ],
   "verdict_history": [
     {
       "iteration": 1,
-      "timestamp": "2026-05-08T20:38:11.555115+00:00",
+      "timestamp": "2026-05-08T21:07:28.376325+00:00",
       "models": [
+        {
+          "name": "Schottky_series_resistance",
+          "verdict": "marginal",
+          "R2": 0.986388,
+          "R2_log": 0.996057,
+          "numerical": "moderate",
+          "physical": "borderline",
+          "residual_pat": "high-V systematic"
+        },
         {
           "name": "Schottky_emission",
           "verdict": "rejected",
-          "R2": -6.004892,
-          "R2_log": 0.89919,
-          "numerical": "rejected",
-          "physical": "unreasonable",
-          "residual_pat": "high-V systematic"
-        },
-        {
-          "name": "Schottky_SCLC_hybrid",
-          "verdict": "rejected",
-          "R2": -62.921194,
-          "R2_log": 0.849076,
-          "numerical": "rejected",
-          "physical": "unreasonable",
-          "residual_pat": "high-V systematic"
-        },
-        {
-          "name": "SCLC_single_trap",
-          "verdict": "rejected",
-          "R2": -0.116547,
-          "R2_log": 0.637425,
+          "R2": -98.209961,
+          "R2_log": 0.845266,
           "numerical": "rejected",
           "physical": "unreasonable",
           "residual_pat": "high-V systematic"
@@ -50,45 +41,56 @@
         {
           "name": "Poole_Frenkel_emission",
           "verdict": "rejected",
-          "R2": -0.865932,
-          "R2_log": -1.119213,
+          "R2": -0.878959,
+          "R2_log": null,
+          "numerical": "rejected",
+          "physical": "unreasonable",
+          "residual_pat": "high-V systematic"
+        },
+        {
+          "name": "Trap_SCLC_single_level",
+          "verdict": "rejected",
+          "R2": -1041.520728,
+          "R2_log": -1.912288,
           "numerical": "rejected",
           "physical": "unreasonable",
           "residual_pat": "high-V systematic"
         }
       ],
-      "best_model": "Schottky_emission",
-      "best_verdict": "rejected",
-      "best_R2_log": 0.89919
+      "best_model": "Schottky_series_resistance",
+      "best_verdict": "marginal",
+      "best_R2_log": 0.996057
     }
   ],
   "feedback_history": [
-    "The failure of all single-barrier models combined with N/A rectification ratio definitively points to symmetric device geometry. Implement back_to_back_Schottky as the highest priority mechanism, modeling two opposing Schottky barriers in series: J = Js*(exp(q*(V-J*Rs*A)/(n*k*T)) - exp(-q*(V-J*Rs*A)/(n*k*T))). Use initial guesses of barrier height \u03c6_B=0.7-0.8 eV (from previous fits), ideality n=2.0 (from IV stats), Richardson constant A*=30 A/cm\u00b2/K\u00b2 (for ZnO), and critically include Rs=5.15 \u03a9\u00b7cm\u00b2 in series to account for contact resistance masking high-voltage behavior. As a secondary approach, try recombination_tunneling_Schottky to capture the n\u22482 ideality through interface state recombination: J = J0_rec*exp(q*V/(2*k*T)) representing recombination current with a parallel diffusion component. For trap_assisted_tunneling, model field-assisted tunneling through interface traps: J = J0_TAT*V*exp(-phi_t*d/V) with trap barrier \u03c6_t\u22480.3-0.5 eV and actual thickness d=200 nm (2\u00d710\u207b\u2075 cm). All models must include series resistance Rs=5.15 \u03a9\u00b7cm\u00b2 as this is confirmed by residual analysis showing 1019\u00d7 growth at high voltage. Extract and report fitted Rs values to validate the circuit diagnosis.\n\nDO NOT propose any of these already-tried mechanisms: .\nCircuit guidance: Include series resistance Rs in the equivalent circuit (init guess \u22485.2 \u03a9\u00b7cm\u00b2)."
+    "Prioritize the back-to-back Schottky double barrier mechanism as the primary model, implementing two identical opposing Schottky barriers in series (each with phi_B\u22480.8 eV, A_star=32 A/(cm\u00b2\u00b7K\u00b2) fixed for ZnO, ideality n\u22481.0-1.2 per barrier) plus shared series resistance Rs=0.1 \u03a9\u00b7cm\u00b2. This topology naturally explains the symmetric non-rectifying IV curve and the observed effective ideality near 2.0. As a secondary approach, implement Schottky emission with interface recombination states, fixing A_star=32 and allowing barrier height phi_B (0.6-0.9 eV range) and recombination ideality factor n (constrain to 1.8-2.2) to vary, in series with Rs=0.1 \u03a9\u00b7cm\u00b2. For the third attempt, implement thermionic field emission (TFE) that combines tunneling and thermionic components, appropriate for moderate barrier heights and ZnO's high defect density; use ZnO parameters (m_eff=0.24*m_e, eps_r=8.5, assume N_d~10^16-10^18 cm^-3) to calculate the characteristic tunneling energy E_00, and fit phi_B while including Rs=0.1 \u03a9\u00b7cm\u00b2. Finally, explore a grain boundary barrier model where multiple (N_GB=2-5) back-to-back barriers with barrier height phi_GB=0.3-0.8 eV create the symmetric transport, using sinh voltage dependence for each barrier. Always include the series resistance Rs=0.1 \u03a9\u00b7cm\u00b2 in all equivalent circuits as the circuit diagnosis confirms its necessity at high voltages. Avoid any single-diode rectifying models or bulk-limited mechanisms as these have been definitively ruled out by the symmetric data. Report fitted barrier heights, effective ideality factors, and physical interpretation of which ZnO microstructure feature (grain boundaries vs dual contacts) best explains the double-barrier behavior.\n\nDO NOT propose any of these already-tried mechanisms: .\nCircuit guidance: Include series resistance Rs in the equivalent circuit (init guess \u22480.1 \u03a9\u00b7cm\u00b2)."
   ],
   "diagnosis_history": [
     {
       "needs_series_resistance": true,
-      "Rs_estimate_ohm_cm2": 5.147627447795431,
+      "Rs_estimate_ohm_cm2": 0.09857878237324216,
       "needs_shunt_resistance": false,
       "Rsh_estimate_ohm_cm2": null,
       "needs_parallel_mechanism": false,
       "evidence": [
-        "Residuals grow 1019.2\u00d7 at high V \u2192 Rs\u22485.1 \u03a9\u00b7cm\u00b2."
+        "Residuals grow 34.9\u00d7 at high V \u2192 Rs\u22480.1 \u03a9\u00b7cm\u00b2."
       ]
     }
   ],
   "best_result": {
     "iteration": 1,
-    "model": "Schottky_emission",
-    "verdict": "rejected",
-    "R2": -6.004892,
-    "R2_log": 0.89919,
+    "model": "Schottky_series_resistance",
+    "verdict": "marginal",
+    "R2": 0.986388,
+    "R2_log": 0.996057,
     "fit_params": {
-      "phi_B": 0.7256310982637998,
-      "n_id": 3.7928520101623673,
-      "A_star": 30.409872217546585
+      "phi_B": 0.7999299564705804,
+      "n": 1.957815421129168,
+      "A_star": 27.588032478940146,
+      "Rs": 40.52626238277766,
+      "J_approx": 1e-06
     }
   },
-  "created_at": "2026-05-08T20:34:59.441247+00:00",
-  "updated_at": "2026-05-08T20:38:11.555163+00:00"
+  "created_at": "2026-05-08T21:04:03.917679+00:00",
+  "updated_at": "2026-05-08T21:07:28.376380+00:00"
 }
