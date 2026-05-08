@@ -1,0 +1,98 @@
+{
+  "pipeline_version": "agent_iv_v2",
+  "material_prompt": "Data as is, Material is ZnO with Au contacts",
+  "geometry": {
+    "area_cm2": 0.01,
+    "thickness_nm": 200
+  },
+  "csv_path": "schottky_iv_dummy.csv",
+  "current_iteration": 2,
+  "max_iterations": 3,
+  "status": "running",
+  "tried_mechanisms": [
+    "Trap_assisted_tunneling_with_Schottky",
+    "Schottky_emission",
+    "SCLC_single_trap_level",
+    "Poole_Frenkel_emission"
+  ],
+  "verdict_history": [
+    {
+      "iteration": 1,
+      "timestamp": "2026-05-08T19:26:29.995882+00:00",
+      "models": [
+        {
+          "name": "Trap_assisted_tunneling_with_Schottky",
+          "verdict": "rejected",
+          "R2": 0.810117,
+          "R2_log": 0.938556,
+          "numerical": "rejected",
+          "physical": "unreasonable",
+          "residual_pat": "high-V systematic"
+        },
+        {
+          "name": "Schottky_emission",
+          "verdict": "rejected",
+          "R2": 0.810124,
+          "R2_log": 0.938553,
+          "numerical": "rejected",
+          "physical": "unreasonable",
+          "residual_pat": "high-V systematic"
+        },
+        {
+          "name": "SCLC_single_trap_level",
+          "verdict": "rejected",
+          "R2": -0.281588,
+          "R2_log": 0.176869,
+          "numerical": "rejected",
+          "physical": "unreasonable",
+          "residual_pat": "high-V systematic"
+        },
+        {
+          "name": "Poole_Frenkel_emission",
+          "verdict": "rejected",
+          "R2": -0.393712,
+          "R2_log": -490.195812,
+          "numerical": "rejected",
+          "physical": "unreasonable",
+          "residual_pat": "high-V systematic"
+        }
+      ],
+      "best_model": "Trap_assisted_tunneling_with_Schottky",
+      "best_verdict": "rejected",
+      "best_R2_log": 0.938556
+    }
+  ],
+  "feedback_history": [
+    "Implement a two-diode equivalent circuit model as the primary fitting strategy. The first diode should represent ideal/near-ideal Schottky emission (J1 = J01*[exp(qV/n1*kT)-1] with n1=1.0-2.0, phi_B=0.65-0.75 eV, A*=32 A/cm\u00b2K\u00b2). The second diode captures interface state recombination (J2 = J02*[exp(qV/n2*kT)-1] with n2=2.0-4.5, J02 as free parameter). Both diodes share series resistance Rs=0.5-1.5 \u03a9\u00b7cm\u00b2 and shunt resistance Rsh=8000-12000 \u03a9\u00b7cm\u00b2 in the equivalent circuit. This topology directly addresses the observed n=3.23 by decomposing it into weighted parallel contributions. If the two-diode model succeeds (R\u00b2>0.95), verify that n1*J01 + n2*J02 reproduces the experimental current magnitude and that the crossover voltage between mechanisms is physically reasonable (typically 0.2-0.5 V for ZnO). If it fails, try the distributed contact resistance variant where Rs becomes voltage-dependent: Rs_eff(V) = Rs0 / [1 + (V/V_spread)^alpha] to model current spreading from contact edges, maintaining the Schottky barrier component with fixed phi_B\u22480.70 eV but allowing effective area to grow with bias.\n\nDO NOT propose any of these already-tried mechanisms: .\nCircuit guidance: Include series resistance Rs in the equivalent circuit (init guess \u22480.6 \u03a9\u00b7cm\u00b2). Include shunt resistance Rsh in parallel (init guess \u22489897.0 \u03a9\u00b7cm\u00b2). Add a parallel interface_recombination_diode path."
+  ],
+  "diagnosis_history": [
+    {
+      "needs_series_resistance": true,
+      "Rs_estimate_ohm_cm2": 0.5641601085086866,
+      "needs_shunt_resistance": true,
+      "Rsh_estimate_ohm_cm2": 9896.805337878093,
+      "needs_parallel_mechanism": false,
+      "evidence": [
+        "Low-V slope \u2192 Rsh\u22489897 \u03a9\u00b7cm\u00b2.",
+        "Residuals grow 485.9\u00d7 at high V \u2192 Rs\u22480.6 \u03a9\u00b7cm\u00b2."
+      ]
+    }
+  ],
+  "best_result": {
+    "iteration": 1,
+    "model": "Trap_assisted_tunneling_with_Schottky",
+    "verdict": "rejected",
+    "R2": 0.810117,
+    "R2_log": 0.938556,
+    "fit_params": {
+      "phi_B": 0.6740875141324846,
+      "A_star": 25.949714433212712,
+      "n": 5.4544097425288545,
+      "J_TAT0": 1.0000000000001661e-08,
+      "gamma": 4.999999999999999,
+      "phi_trap": 100.00000000000003
+    }
+  },
+  "created_at": "2026-05-08T19:23:17.872490+00:00",
+  "updated_at": "2026-05-08T19:26:29.996033+00:00"
+}
